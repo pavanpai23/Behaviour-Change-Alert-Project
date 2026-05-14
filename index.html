@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BehaviourSense — Student Behaviour Change Alert</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== SPLASH / LANDING ========== -->
+<div id="app">
+
+  <!-- NAV -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">⬡</span>
+      <span class="brand-text">BehaviourSense</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" onclick="showPage('dashboard')" class="nav-link">Dashboard</a></li>
+      <li><a href="#" onclick="showPage('track')" class="nav-link">Track</a></li>
+      <li><a href="#" onclick="showPage('reports')" class="nav-link">Reports</a></li>
+      <li><a href="#" onclick="showPage('ai-chat')" class="nav-link">AI Assistant</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()" style="display:none">
+        <img id="avatarImg" src="" alt="User">
+        <span id="userNameNav"></span>
+        <div class="dropdown-menu" id="userDropdown">
+          <a onclick="showPage('profile')">👤 Profile</a>
+          <a onclick="logout()">🚪 Logout</a>
+        </div>
+      </div>
+      <button class="btn-primary" id="loginNavBtn" onclick="showPage('login')">Sign In</button>
+    </div>
+    <button class="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ===== PAGE: LANDING ===== -->
+  <div id="page-landing" class="page active">
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+        <div class="grid-overlay"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">🎓 AI-Powered Student Wellbeing</div>
+        <h1 class="hero-title">
+          Detect. <em>Understand.</em><br>
+          Support Every Student.
+        </h1>
+        <p class="hero-sub">BehaviourSense tracks mood, sleep, activity & communication patterns to identify early signs of behavioural change — helping educators act before it's too late.</p>
+        <div class="hero-actions">
+          <button class="btn-primary btn-lg" onclick="showPage('login')">Get Started Free</button>
+          <button class="btn-ghost btn-lg" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See How It Works ↓</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num">94%</span><span class="stat-label">Early detection rate</span></div>
+          <div class="stat"><span class="stat-num">12k+</span><span class="stat-label">Students monitored</span></div>
+          <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Schools trust us</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="dashboard-preview">
+          <div class="preview-card mood">
+            <div class="pcard-icon">😊</div>
+            <div class="pcard-info"><div class="pcard-title">Mood Score</div><div class="pcard-val">7.2/10</div></div>
+            <div class="mini-chart"><div class="bar" style="height:60%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:72%"></div></div>
+          </div>
+          <div class="preview-card sleep">
+            <div class="pcard-icon">🌙</div>
+            <div class="pcard-info"><div class="pcard-title">Sleep Hours</div><div class="pcard-val">6.8 hrs</div></div>
+            <div class="mini-chart"><div class="bar" style="height:85%"></div><div class="bar" style="height:68%"></div><div class="bar" style="height:72%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:80%"></div></div>
+          </div>
+          <div class="preview-card alert">
+            <div class="alert-dot"></div>
+            <div class="pcard-icon">⚡</div>
+            <div class="pcard-info"><div class="pcard-title">Alert Triggered</div><div class="pcard-val">3 Students</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+      <div class="section-header">
+        <div class="section-tag">What We Track</div>
+        <h2>Four Pillars of Student Wellbeing</h2>
+        <p>Comprehensive monitoring that respects privacy while ensuring no student falls through the cracks.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" onclick="showPage('login')">
+          <div class="feat-img">
+            <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=400&q=80" alt="Activity tracking">
+            <div class="feat-overlay"></div>
+          </div>
+          <div class="feat-content">
+            <div class="feat-icon">🏃</div>
+            <h3>Physical Activity</h3>
+            <p>Track daily movement, sports participation, and changes in physical engagement levels.</p>
+            <span class="feat-tag">Steps • Exercise • Attendance</span>
+          </div>
+        </div>
+        <div class="feature-card" onclick="showPage('login')">
+          <div class="feat-img">
+            <img src="https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=400&q=80" alt="Communication">
+            <div class="feat-overlay"></div>
+          </div>
+          <div class="feat-content">
+            <div class="feat-icon">💬</div>
+            <h3>Communication Patterns</h3>
+            <p>Monitor social interaction frequency, peer communication, and withdrawal signals.</p>
+            <span class="feat-tag">Interactions • Social • Isolation</span>
+          </div>
+        </div>
+        <div class="feature-card" onclick="showPage('login')">
+          <div class="feat-img">
+            <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=80" alt="Sleep patterns">
+            <div class="feat-overlay"></div>
+          </div>
+          <div class="feat-content">
+            <div class="feat-icon">🌙</div>
+            <h3>Sleep Quality</h3>
+            <p>Monitor sleep duration, consistency, and quality to detect fatigue-related behavioural shifts.</p>
+            <span class="feat-tag">Duration • Consistency • Quality</span>
+          </div>
+        </div>
+        <div class="feature-card" onclick="showPage('login')">
+          <div class="feat-img">
+            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=400&q=80" alt="Mood tracking">
+            <div class="feat-overlay"></div>
+          </div>
+          <div class="feat-content">
+            <div class="feat-icon">🎭</div>
+            <h3>Mood & Emotions</h3>
+            <p>Daily mood check-ins with emotional pattern analysis to detect depression or anxiety trends.</p>
+            <span class="feat-tag">Mood • Stress • Wellbeing</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+      <div class="section-header">
+        <div class="section-tag">The Process</div>
+        <h2>Simple, Private, Effective</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-icon">📝</div><h4>Daily Check-In</h4><p>Students fill a quick 2-minute daily form about mood, sleep, activity and social interaction.</p></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-num">02</div><div class="step-icon">🤖</div><h4>AI Analysis</h4><p>Our AI compares entries to baselines, detecting meaningful deviations and patterns over time.</p></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-num">03</div><div class="step-icon">🔔</div><h4>Smart Alerts</h4><p>Teachers and counselors receive prioritized alerts with context — no noise, just what matters.</p></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-num">04</div><div class="step-icon">🤝</div><h4>Timely Support</h4><p>Educators intervene early with data-backed insights before issues escalate.</p></div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand"><span class="brand-icon">⬡</span> BehaviourSense</div>
+        <p>© 2025 BehaviourSense. Built with care for every student's wellbeing.</p>
+        <div class="footer-links">
+          <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===== PAGE: LOGIN ===== -->
+  <div id="page-login" class="page">
+    <div class="auth-layout">
+      <div class="auth-visual">
+        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80" alt="Students">
+        <div class="auth-visual-overlay">
+          <h2>"Early intervention changes lives."</h2>
+          <p>— Helping educators identify students who need support before a crisis occurs.</p>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-form">
+          <div class="auth-logo"><span class="brand-icon">⬡</span> BehaviourSense</div>
+          <h2>Welcome Back</h2>
+          <p class="auth-sub">Sign in to continue to your dashboard</p>
+          
+          <div class="role-tabs">
+            <button class="role-tab active" onclick="setRole('teacher', this)">👩‍🏫 Teacher</button>
+            <button class="role-tab" onclick="setRole('student', this)">👨‍🎓 Student</button>
+            <button class="role-tab" onclick="setRole('admin', this)">🏫 Admin</button>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="you@school.edu" class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrap">
+              <input type="password" id="loginPass" placeholder="••••••••" class="form-input">
+              <button class="toggle-pass" onclick="togglePass('loginPass')">👁</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="checkbox-label"><input type="checkbox"> Remember me</label>
+            <a href="#" class="link">Forgot password?</a>
+          </div>
+          <button class="btn-primary btn-full" onclick="login()">Sign In →</button>
+          <div class="demo-logins">
+            <p>Quick demo:</p>
+            <button class="demo-btn" onclick="demoLogin('teacher')">Teacher Demo</button>
+            <button class="demo-btn" onclick="demoLogin('student')">Student Demo</button>
+          </div>
+          <p class="auth-switch">New here? <a href="#" onclick="showPage('register')">Create account</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: REGISTER ===== -->
+  <div id="page-register" class="page">
+    <div class="auth-layout">
+      <div class="auth-visual">
+        <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80" alt="School">
+        <div class="auth-visual-overlay">
+          <h2>"Every data point tells a story."</h2>
+          <p>— Join thousands of educators using BehaviourSense to support student wellbeing.</p>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-form">
+          <div class="auth-logo"><span class="brand-icon">⬡</span> BehaviourSense</div>
+          <h2>Create Account</h2>
+          <div class="role-tabs">
+            <button class="role-tab active" onclick="setRole('teacher', this)">👩‍🏫 Teacher</button>
+            <button class="role-tab" onclick="setRole('student', this)">👨‍🎓 Student</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="regFirst" placeholder="Jane" class="form-input"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="regLast" placeholder="Doe" class="form-input"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="you@school.edu" class="form-input"></div>
+          <div class="form-group"><label>School / Institution</label><input type="text" id="regSchool" placeholder="Greenwood High School" class="form-input"></div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="input-wrap"><input type="password" id="regPass" placeholder="Min. 8 characters" class="form-input"><button class="toggle-pass" onclick="togglePass('regPass')">👁</button></div>
+          </div>
+          <button class="btn-primary btn-full" onclick="register()">Create Account →</button>
+          <p class="auth-switch">Already have an account? <a href="#" onclick="showPage('login')">Sign in</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: DASHBOARD ===== -->
+  <div id="page-dashboard" class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div>
+          <h1 id="dashGreeting">Good Morning! 👋</h1>
+          <p id="dashDate" class="page-sub"></p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-outline" onclick="showPage('track')">+ Log Today</button>
+          <button class="btn-primary" onclick="showPage('ai-chat')">🤖 Ask AI</button>
+        </div>
+      </div>
+
+      <!-- ALERT BANNER -->
+      <div class="alert-banner" id="alertBanner">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text">
+          <strong>Attention:</strong> 3 students show significant behaviour changes this week.
+          <a href="#" onclick="showPage('reports')">View Alerts →</a>
+        </div>
+        <button onclick="document.getElementById('alertBanner').style.display='none'">✕</button>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background:#e8f5e9;color:#2e7d32">🏃</div>
+          <div><div class="stat-card-label">Avg Activity Score</div><div class="stat-card-val">72%</div><div class="stat-trend up">↑ 5% this week</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background:#e3f2fd;color:#1565c0">💬</div>
+          <div><div class="stat-card-label">Avg Communication</div><div class="stat-card-val">68%</div><div class="stat-trend down">↓ 8% vs last week</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background:#fce4ec;color:#c62828">🌙</div>
+          <div><div class="stat-card-label">Avg Sleep (hrs)</div><div class="stat-card-val">6.5</div><div class="stat-trend down">↓ 0.5 hrs from target</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon" style="background:#fff3e0;color:#e65100">😊</div>
+          <div><div class="stat-card-label">Avg Mood Score</div><div class="stat-card-val">7.1/10</div><div class="stat-trend up">↑ 0.3 pts</div></div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- CHART -->
+        <div class="dash-card wide">
+          <div class="card-header">
+            <h3>Weekly Behaviour Trends</h3>
+            <div class="chart-legend">
+              <span class="legend-dot" style="background:#6366f1"></span>Mood
+              <span class="legend-dot" style="background:#22c55e"></span>Activity
+              <span class="legend-dot" style="background:#3b82f6"></span>Sleep
+              <span class="legend-dot" style="background:#f59e0b"></span>Communication
+            </div>
+          </div>
+          <canvas id="trendChart"></canvas>
+        </div>
+
+        <!-- RECENT ALERTS -->
+        <div class="dash-card">
+          <div class="card-header"><h3>🔔 Recent Alerts</h3><button class="card-btn" onclick="showPage('reports')">View All</button></div>
+          <div class="alert-list" id="alertList"></div>
+        </div>
+
+        <!-- TOP STUDENTS AT RISK -->
+        <div class="dash-card">
+          <div class="card-header"><h3>⚠️ Students Needing Attention</h3></div>
+          <div class="risk-list" id="riskList"></div>
+        </div>
+
+        <!-- ACTIVITY BREAKDOWN -->
+        <div class="dash-card">
+          <div class="card-header"><h3>📊 Today's Submissions</h3></div>
+          <div class="donut-wrap">
+            <canvas id="donutChart" width="180" height="180"></canvas>
+            <div class="donut-center"><span class="donut-val">78%</span><span class="donut-label">Submitted</span></div>
+          </div>
+          <div class="donut-legend">
+            <div class="dl-item"><span class="dl-dot" style="background:#6366f1"></span>Submitted (78%)</div>
+            <div class="dl-item"><span class="dl-dot" style="background:#e2e8f0"></span>Pending (22%)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: TRACK (Daily Log) ===== -->
+  <div id="page-track" class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div>
+          <h1>Daily Check-In 📋</h1>
+          <p class="page-sub">How are you doing today? Takes just 2 minutes.</p>
+        </div>
+        <div class="progress-ring-wrap">
+          <div class="progress-label" id="trackProgress">Step 1 of 4</div>
+        </div>
+      </div>
+
+      <div class="track-steps">
+        <div class="step-tab active" id="stab-1" onclick="goStep(1)"><span>🎭</span>Mood</div>
+        <div class="step-tab" id="stab-2" onclick="goStep(2)"><span>🌙</span>Sleep</div>
+        <div class="step-tab" id="stab-3" onclick="goStep(3)"><span>🏃</span>Activity</div>
+        <div class="step-tab" id="stab-4" onclick="goStep(4)"><span>💬</span>Social</div>
+      </div>
+
+      <!-- STEP 1: MOOD -->
+      <div class="track-step" id="step-1">
+        <div class="track-card">
+          <div class="track-section-img">
+            <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=600&q=80" alt="Mood">
+            <div class="track-img-text"><h3>🎭 Mood & Emotions</h3><p>How are you feeling emotionally today?</p></div>
+          </div>
+          <div class="track-body">
+            <label class="track-label">Overall Mood (1 = Very Low, 10 = Excellent)</label>
+            <div class="emoji-scale">
+              <span>😢</span>
+              <input type="range" id="moodScore" min="1" max="10" value="7" oninput="updateEmoji('mood', this.value)" class="slider">
+              <span>😄</span>
+            </div>
+            <div class="scale-val" id="moodVal">7 — 😊 Good</div>
+
+            <label class="track-label">What emotions are you experiencing? (select all that apply)</label>
+            <div class="emotion-chips" id="emotionChips">
+              <button class="chip" onclick="toggleChip(this)">😰 Anxious</button>
+              <button class="chip" onclick="toggleChip(this)">😔 Sad</button>
+              <button class="chip active" onclick="toggleChip(this)">😌 Calm</button>
+              <button class="chip active" onclick="toggleChip(this)">😊 Happy</button>
+              <button class="chip" onclick="toggleChip(this)">😤 Frustrated</button>
+              <button class="chip" onclick="toggleChip(this)">😳 Stressed</button>
+              <button class="chip" onclick="toggleChip(this)">🤩 Excited</button>
+              <button class="chip" onclick="toggleChip(this)">😞 Hopeless</button>
+              <button class="chip" onclick="toggleChip(this)">💪 Motivated</button>
+              <button class="chip" onclick="toggleChip(this)">😶 Numb</button>
+            </div>
+
+            <label class="track-label">Any notes about your mood today?</label>
+            <textarea class="form-input" id="moodNotes" rows="3" placeholder="Optional — share what's on your mind..."></textarea>
+          </div>
+          <div class="track-footer">
+            <div></div>
+            <button class="btn-primary" onclick="goStep(2)">Next: Sleep →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: SLEEP -->
+      <div class="track-step hidden" id="step-2">
+        <div class="track-card">
+          <div class="track-section-img">
+            <img src="https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&q=80" alt="Sleep">
+            <div class="track-img-text"><h3>🌙 Sleep Quality</h3><p>Tell us about last night's sleep.</p></div>
+          </div>
+          <div class="track-body">
+            <label class="track-label">Hours of Sleep Last Night</label>
+            <div class="emoji-scale">
+              <span>😴</span>
+              <input type="range" id="sleepHours" min="1" max="12" value="7" step="0.5" oninput="updateSleepVal(this.value)" class="slider">
+              <span>🌟</span>
+            </div>
+            <div class="scale-val" id="sleepVal">7 hours</div>
+
+            <label class="track-label">Sleep Quality</label>
+            <div class="qual-options" id="sleepQual">
+              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😫</div><div>Very Poor</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😕</div><div>Poor</div></div>
+              <div class="qual-opt active" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😐</div><div>Fair</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😊</div><div>Good</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">🌟</div><div>Excellent</div></div>
+            </div>
+
+            <label class="track-label">Sleep Issues (if any)</label>
+            <div class="emotion-chips">
+              <button class="chip" onclick="toggleChip(this)">😰 Nightmares</button>
+              <button class="chip" onclick="toggleChip(this)">🔄 Restless</button>
+              <button class="chip" onclick="toggleChip(this)">⏰ Woke early</button>
+              <button class="chip" onclick="toggleChip(this)">💭 Racing thoughts</button>
+              <button class="chip" onclick="toggleChip(this)">✅ No issues</button>
+            </div>
+          </div>
+          <div class="track-footer">
+            <button class="btn-outline" onclick="goStep(1)">← Back</button>
+            <button class="btn-primary" onclick="goStep(3)">Next: Activity →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: ACTIVITY -->
+      <div class="track-step hidden" id="step-3">
+        <div class="track-card">
+          <div class="track-section-img">
+            <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=80" alt="Activity">
+            <div class="track-img-text"><h3>🏃 Physical Activity</h3><p>How active were you today?</p></div>
+          </div>
+          <div class="track-body">
+            <label class="track-label">Exercise / Physical Activity Level</label>
+            <div class="activity-grid">
+              <div class="act-opt" onclick="selectAct(this)">
+                <div class="act-icon">🛋️</div><div class="act-label">Sedentary</div><div class="act-sub">No activity</div>
+              </div>
+              <div class="act-opt" onclick="selectAct(this)">
+                <div class="act-icon">🚶</div><div class="act-label">Light</div><div class="act-sub">Short walk</div>
+              </div>
+              <div class="act-opt active" onclick="selectAct(this)">
+                <div class="act-icon">🚴</div><div class="act-label">Moderate</div><div class="act-sub">30 min exercise</div>
+              </div>
+              <div class="act-opt" onclick="selectAct(this)">
+                <div class="act-icon">🏋️</div><div class="act-label">Active</div><div class="act-sub">60+ min workout</div>
+              </div>
+              <div class="act-opt" onclick="selectAct(this)">
+                <div class="act-icon">⚡</div><div class="act-label">Very Active</div><div class="act-sub">Intense training</div>
+              </div>
+            </div>
+
+            <label class="track-label">Classes / School Attendance Today</label>
+            <div class="qual-options" id="attendQual">
+              <div class="qual-opt" onclick="selectQual(this,'attendQual')"><div class="qual-icon">❌</div><div>Absent</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'attendQual')"><div class="qual-icon">📉</div><div>Partial</div></div>
+              <div class="qual-opt active" onclick="selectQual(this,'attendQual')"><div class="qual-icon">📋</div><div>Most</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'attendQual')"><div class="qual-icon">✅</div><div>Full</div></div>
+            </div>
+
+            <label class="track-label">Approximate steps today</label>
+            <input type="number" class="form-input" id="stepsCount" placeholder="e.g. 5000" min="0" max="50000">
+          </div>
+          <div class="track-footer">
+            <button class="btn-outline" onclick="goStep(2)">← Back</button>
+            <button class="btn-primary" onclick="goStep(4)">Next: Social →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: SOCIAL / COMMUNICATION -->
+      <div class="track-step hidden" id="step-4">
+        <div class="track-card">
+          <div class="track-section-img">
+            <img src="https://images.unsplash.com/photo-1516302752625-fcc3c50ae61f?w=600&q=80" alt="Communication">
+            <div class="track-img-text"><h3>💬 Social & Communication</h3><p>How did you connect with others today?</p></div>
+          </div>
+          <div class="track-body">
+            <label class="track-label">Social Interaction Level</label>
+            <div class="emoji-scale">
+              <span>🙈</span>
+              <input type="range" id="socialScore" min="1" max="10" value="6" oninput="updateSocialVal(this.value)" class="slider">
+              <span>🎉</span>
+            </div>
+            <div class="scale-val" id="socialVal">6 — Moderate interaction</div>
+
+            <label class="track-label">Communication with Teachers</label>
+            <div class="qual-options" id="teacherComm">
+              <div class="qual-opt" onclick="selectQual(this,'teacherComm')"><div class="qual-icon">🚫</div><div>None</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'teacherComm')"><div class="qual-icon">👋</div><div>Minimal</div></div>
+              <div class="qual-opt active" onclick="selectQual(this,'teacherComm')"><div class="qual-icon">💬</div><div>Normal</div></div>
+              <div class="qual-opt" onclick="selectQual(this,'teacherComm')"><div class="qual-icon">🤝</div><div>Engaged</div></div>
+            </div>
+
+            <label class="track-label">Feelings about social situations today</label>
+            <div class="emotion-chips">
+              <button class="chip" onclick="toggleChip(this)">🙂 Connected</button>
+              <button class="chip" onclick="toggleChip(this)">😕 Isolated</button>
+              <button class="chip active" onclick="toggleChip(this)">😐 Neutral</button>
+              <button class="chip" onclick="toggleChip(this)">😟 Lonely</button>
+              <button class="chip" onclick="toggleChip(this)">🥳 Social</button>
+              <button class="chip" onclick="toggleChip(this)">😤 Conflict</button>
+            </div>
+
+            <label class="track-label">Anything else you'd like to share?</label>
+            <textarea class="form-input" id="generalNotes" rows="3" placeholder="Anything on your mind — completely private..."></textarea>
+          </div>
+          <div class="track-footer">
+            <button class="btn-outline" onclick="goStep(3)">← Back</button>
+            <button class="btn-primary" onclick="submitLog()">Submit Check-In ✓</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: REPORTS ===== -->
+  <div id="page-reports" class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <div>
+          <h1>Reports & Analytics 📊</h1>
+          <p class="page-sub">Comprehensive behavioural analysis and alerts</p>
+        </div>
+        <div class="header-actions">
+          <select class="form-input" id="reportPeriod" onchange="updateReports()">
+            <option>Last 7 Days</option>
+            <option>Last 30 Days</option>
+            <option>This Term</option>
+          </select>
+          <button class="btn-primary" onclick="exportReport()">📥 Export PDF</button>
+        </div>
+      </div>
+
+      <!-- STUDENT SEARCH -->
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="studentSearch" placeholder="Search student by name or ID..." class="search-input" oninput="filterStudents()">
+      </div>
+
+      <div class="reports-grid">
+        <!-- ALERT CATEGORIES -->
+        <div class="dash-card wide">
+          <div class="card-header"><h3>🚨 Active Behaviour Alerts</h3></div>
+          <div class="alerts-table" id="alertsTable">
+            <!-- filled by JS -->
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="card-header"><h3>📈 Behaviour Change Over Time</h3></div>
+          <canvas id="changeChart"></canvas>
+        </div>
+
+        <div class="dash-card">
+          <div class="card-header"><h3>🎯 Risk Distribution</h3></div>
+          <canvas id="riskChart"></canvas>
+        </div>
+
+        <!-- STUDENT PROFILES -->
+        <div class="dash-card wide">
+          <div class="card-header"><h3>👥 Student Profiles</h3></div>
+          <div class="student-grid" id="studentGrid"></div>
+        </div>
+      </div>
+
+      <!-- STUDENT DETAIL MODAL -->
+      <div class="modal-overlay" id="studentModal" onclick="closeModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+          <button class="modal-close" onclick="closeModal()">✕</button>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: AI CHAT ===== -->
+  <div id="page-ai-chat" class="page">
+    <div class="chat-layout">
+      <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+          <h3>🤖 AI Assistant</h3>
+          <button class="btn-outline btn-sm" onclick="newChat()">+ New</button>
+        </div>
+        <div class="chat-history">
+          <div class="chat-hist-item active">Today's Analysis</div>
+          <div class="chat-hist-item">Weekly Report Q&A</div>
+          <div class="chat-hist-item">Student Risk Review</div>
+        </div>
+        <div class="chat-suggestions">
+          <p>Suggested questions:</p>
+          <button class="sugg-btn" onclick="askSuggestion(this)">Which students need urgent attention?</button>
+          <button class="sugg-btn" onclick="askSuggestion(this)">What behaviour patterns are emerging?</button>
+          <button class="sugg-btn" onclick="askSuggestion(this)">How is the class mood trending?</button>
+          <button class="sugg-btn" onclick="askSuggestion(this)">Explain the sleep-mood correlation</button>
+        </div>
+        <div class="web-search-toggle">
+          <label class="toggle-row">
+            <span>🌐 Web Search</span>
+            <input type="checkbox" id="webSearchToggle" onchange="toggleWebSearch(this)">
+            <div class="toggle-switch"></div>
+          </label>
+          <p class="toggle-desc">Enable to search latest research on student wellbeing</p>
+        </div>
+      </div>
+      <div class="chat-main">
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg ai">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">
+              <p>Hello! I'm your BehaviourSense AI assistant. I can help you:</p>
+              <ul>
+                <li>Analyse student behaviour patterns</li>
+                <li>Identify students who need support</li>
+                <li>Understand mood, sleep, and activity correlations</li>
+                <li>Answer questions about student wellbeing research</li>
+                <li>Search the web for latest educational psychology insights</li>
+              </ul>
+              <p>What would you like to know?</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-wrap">
+            <textarea id="chatInput" placeholder="Ask anything about student behaviour..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="send-btn" onclick="sendChat()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+          <p class="chat-hint">AI powered by Claude · Press Enter to send · Shift+Enter for new line</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: PROFILE ===== -->
+  <div id="page-profile" class="page">
+    <div class="page-container">
+      <div class="page-header">
+        <h1>My Profile 👤</h1>
+      </div>
+      <div class="profile-layout">
+        <div class="profile-card">
+          <div class="profile-avatar-big">
+            <img id="profileAvatarImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=student" alt="Avatar">
+            <button class="avatar-edit" onclick="document.getElementById('avatarUpload').click()">✎</button>
+            <input type="file" id="avatarUpload" accept="image/*" onchange="updateAvatar(this)" style="display:none">
+          </div>
+          <h2 id="profileName">Jane Smith</h2>
+          <p id="profileRole" class="profile-role">Teacher · Greenwood High</p>
+          <div class="profile-stats">
+            <div><strong id="pDaysLogged">24</strong><span>Days Logged</span></div>
+            <div><strong id="pStreak">7</strong><span>Day Streak 🔥</span></div>
+            <div><strong id="pAlerts">3</strong><span>Alerts Sent</span></div>
+          </div>
+        </div>
+        <div class="profile-details">
+          <div class="dash-card">
+            <div class="card-header"><h3>Personal Info</h3><button class="card-btn" onclick="saveProfile()">Save Changes</button></div>
+            <div class="form-row">
+              <div class="form-group"><label>First Name</label><input type="text" class="form-input" id="pfFirst" value="Jane"></div>
+              <div class="form-group"><label>Last Name</label><input type="text" class="form-input" id="pfLast" value="Smith"></div>
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" class="form-input" id="pfEmail" value="jane.smith@greenwood.edu"></div>
+            <div class="form-group"><label>School</label><input type="text" class="form-input" id="pfSchool" value="Greenwood High School"></div>
+          </div>
+          <div class="dash-card">
+            <div class="card-header"><h3>My Behaviour History</h3></div>
+            <canvas id="myHistoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS TOAST -->
+  <div class="toast" id="toast"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
