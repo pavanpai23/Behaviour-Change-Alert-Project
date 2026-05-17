@@ -107,7 +107,7 @@ app.post('/api/ai/chat', async (req, res) => {
       messages
     };
     if (tools) body.tools = tools;
-
+  
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
