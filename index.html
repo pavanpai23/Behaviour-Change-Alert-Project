@@ -1,891 +1,1858 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>MindGuard — Mental Health & Behaviour Alert System</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<div id="app">
-
-  <!-- ===== NAVBAR ===== -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-brand" onclick="showPage('landing')">
-      <div class="brand-logo">🧠</div>
-      <span class="brand-text">MindGuard</span>
-    </div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#" onclick="showPage('dashboard')" class="nav-link">Dashboard</a></li>
-      <li><a href="#" onclick="showPage('track')" class="nav-link">Check-In</a></li>
-      <li><a href="#" onclick="showPage('reports')" class="nav-link">Reports</a></li>
-      <li><a href="#" onclick="showPage('ai-chat')" class="nav-link">AI Assistant</a></li>
-    </ul>
-    <div class="nav-actions">
-      <div class="user-avatar-wrap" id="userAvatar" style="display:none">
-        <div class="user-avatar" onclick="toggleUserMenu()">
-          <img id="avatarImg" src="" alt="User">
-          <span id="userNameNav"></span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>MindGuard — Mental Health & Behaviour Alert System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- ===== NAVBAR ===== -->
+      <nav class="navbar" id="navbar">
+        <div class="nav-brand" onclick="showPage('landing')">
+          <div class="brand-logo">🧠</div>
+          <span class="brand-text">MindGuard</span>
         </div>
-        <div class="dropdown-menu" id="userDropdown">
-          <a onclick="showPage('profile')">👤 My Profile</a>
-          <a onclick="showPage('wellness')">💚 Wellness Hub</a>
-          <a onclick="logout()">🚪 Sign Out</a>
-        </div>
-      </div>
-      <button class="btn-primary" id="loginNavBtn" onclick="showPage('login')">Sign In</button>
-    </div>
-    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <!-- ===== PAGE: LANDING ===== -->
-  <div id="page-landing" class="page active">
-    <section class="hero">
-      <div class="hero-bg">
-        <div class="orb orb1"></div>
-        <div class="orb orb2"></div>
-        <div class="orb orb3"></div>
-        <div class="grid-overlay"></div>
-      </div>
-      <div class="hero-content">
-        <div class="hero-badge">🛡️ Trusted Mental Health Monitoring</div>
-        <h1 class="hero-title">
-          Understand.<br><em>Detect.</em> Support.
-        </h1>
-        <p class="hero-sub">MindGuard uses AI to detect early signs of mental health concerns — mood, sleep, anxiety, stress — and instantly alerts your trusted support network.</p>
-        <div class="hero-actions">
-          <button class="btn-primary btn-lg" onclick="showPage('login')">Start Free Check-In</button>
-          <button class="btn-ghost btn-lg" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">How It Works ↓</button>
-        </div>
-        <div class="hero-stats">
-          <div class="stat"><span class="stat-num">94%</span><span class="stat-label">Early detection accuracy</span></div>
-          <div class="stat"><span class="stat-num">3 min</span><span class="stat-label">Daily check-in time</span></div>
-          <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Private & secure</span></div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <img class="hero-photo" src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=900&q=80" alt="Calm person journaling beside a window">
-        <div class="dashboard-preview">
-          <div class="preview-card mood">
-            <div class="pcard-icon">😊</div>
-            <div class="pcard-info"><div class="pcard-title">Mood Score</div><div class="pcard-val">7.2/10</div></div>
-            <div class="mini-chart"><div class="bar" style="height:60%"></div><div class="bar" style="height:80%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:72%"></div></div>
-          </div>
-          <div class="preview-card sleep">
-            <div class="pcard-icon">🌙</div>
-            <div class="pcard-info"><div class="pcard-title">Sleep Quality</div><div class="pcard-val">6.8 hrs</div></div>
-            <div class="mini-chart"><div class="bar" style="height:85%"></div><div class="bar" style="height:68%"></div><div class="bar" style="height:72%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:80%"></div></div>
-          </div>
-          <div class="preview-card alert-card">
-            <div class="alert-dot"></div>
-            <div class="pcard-icon">⚡</div>
-            <div class="pcard-info"><div class="pcard-title">Alert Sent To Family</div><div class="pcard-val">Auto-Notified</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="features" id="features">
-      <div class="section-header">
-        <div class="section-tag">What We Monitor</div>
-        <h2>Six Pillars of Mental Wellbeing</h2>
-        <p>Comprehensive daily tracking that understands your mind and body — and alerts loved ones when you need support.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card"><div class="feat-icon">🎭</div><h3>Mood & Emotions</h3><p>Daily emotion check-ins with AI pattern detection to identify depression, anxiety, or mood disorders early.</p></div>
-        <div class="feature-card"><div class="feat-icon">🌙</div><h3>Sleep Patterns</h3><p>Monitor sleep quality, duration and consistency — poor sleep is one of the earliest signs of mental health changes.</p></div>
-        <div class="feature-card"><div class="feat-icon">🏃</div><h3>Physical Activity</h3><p>Track movement and exercise — activity levels directly correlate with mental health and motivation.</p></div>
-        <div class="feature-card"><div class="feat-icon">💬</div><h3>Social Interaction</h3><p>Detect withdrawal, isolation or conflict patterns in your social interactions.</p></div>
-        <div class="feature-card"><div class="feat-icon">🧠</div><h3>Psychological State</h3><p>Advanced psychological MCQ assessments based on PHQ-9, GAD-7 and similar validated instruments.</p></div>
-        <div class="feature-card"><div class="feat-icon">🔔</div><h3>Family Alerts</h3><p>Automatically notifies your trusted contacts — family or counselors — when risk indicators are detected.</p></div>
-      </div>
-    </section>
-
-    <section class="how-it-works">
-      <div class="section-header">
-        <div class="section-tag">The Process</div>
-        <h2>Simple, Private, Life-Changing</h2>
-      </div>
-      <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-icon">📝</div><h4>Daily Check-In</h4><p>Answer a 3-minute questionnaire covering mood, sleep, activity, psychology and social wellbeing.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><div class="step-num">02</div><div class="step-icon">🤖</div><h4>AI Analysis</h4><p>Our AI compares your entries to baselines and recognized psychological patterns to score your mental health.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><div class="step-num">03</div><div class="step-icon">⚠️</div><h4>Risk Detection</h4><p>When weakness or risk is detected, you receive personalized tips and an immediate alert is sent to your support network.</p></div>
-        <div class="step-arrow">→</div>
-        <div class="step"><div class="step-num">04</div><div class="step-icon">🤝</div><h4>Get Support</h4><p>Family members or counselors are notified so you get timely help before a crisis occurs.</p></div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        <div class="footer-brand"><span>🧠</span> MindGuard</div>
-        <p>© 2025 MindGuard. Your mental health matters. Built with care.</p>
-        <div class="footer-links">
-          <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a><a href="#">Crisis Help</a>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- ===== PAGE: LOGIN ===== -->
-  <div id="page-login" class="page">
-    <div class="auth-layout">
-      <div class="auth-visual">
-        <div class="auth-visual-bg"></div>
-        <div class="auth-visual-content">
-          <div class="auth-brand">🧠 MindGuard</div>
-          <h2>"Early support changes everything."</h2>
-          <p>Helping people identify mental health needs before they become crises.</p>
-          <div class="auth-features">
-            <div class="af-item">✅ Shared admin updates across devices</div>
-            <div class="af-item">✅ Family alert system</div>
-            <div class="af-item">✅ AI-powered mental health insights</div>
-          </div>
-        </div>
-      </div>
-      <div class="auth-form-wrap">
-        <div class="auth-form">
-          <div class="auth-logo">🧠 <span>MindGuard</span></div>
-          <h2>Welcome Back</h2>
-          <p class="auth-sub">Sign in to continue your mental wellness journey</p>
-          
-          <div class="role-tabs">
-            <button class="role-tab active" onclick="setRole('user', this)">🙋 User</button>
-            <button class="role-tab" onclick="setRole('admin', this)">🏫 Admin</button>
-          </div>
-
-          <div class="form-group" id="loginNameGroup">
-            <label>Your Name</label>
-            <input type="text" id="loginName" placeholder="Registered users can leave this blank" class="form-input">
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" id="loginEmail" placeholder="you@example.com" class="form-input">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-wrap">
-              <input type="password" id="loginPass" placeholder="••••••••" class="form-input">
-              <button class="toggle-pass" onclick="togglePass('loginPass')" type="button">👁</button>
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a href="#" onclick="showPage('dashboard')" class="nav-link"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="showPage('track')" class="nav-link"
+              >Check-In</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="showPage('reports')" class="nav-link"
+              >Reports</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="showPage('ai-chat')" class="nav-link"
+              >AI Assistant</a
+            >
+          </li>
+        </ul>
+        <div class="nav-actions">
+          <div class="user-avatar-wrap" id="userAvatar" style="display: none">
+            <div class="user-avatar" onclick="toggleUserMenu()">
+              <img id="avatarImg" src="" alt="User" />
+              <span id="userNameNav"></span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            <div class="dropdown-menu" id="userDropdown">
+              <a onclick="showPage('profile')">👤 My Profile</a>
+              <a onclick="showPage('wellness')">💚 Wellness Hub</a>
+              <a onclick="logout()">🚪 Sign Out</a>
             </div>
           </div>
+          <button
+            class="btn-primary"
+            id="loginNavBtn"
+            onclick="showPage('login')"
+          >
+            Sign In
+          </button>
+        </div>
+        <button
+          class="hamburger"
+          id="hamburger"
+          onclick="toggleNav()"
+          aria-label="Menu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
 
-          <!-- Family/Counselor Contact -->
-          <div class="emergency-contact-section">
-            <div class="ec-header" onclick="toggleEcSection()">
-              <span>🔔 Family / Counselor Alert Contact</span>
-              <span id="ecToggleIcon">▼</span>
+      <!-- ===== PAGE: LANDING ===== -->
+      <div id="page-landing" class="page active">
+        <section class="hero">
+          <div class="hero-bg">
+            <div class="orb orb1"></div>
+            <div class="orb orb2"></div>
+            <div class="orb orb3"></div>
+            <div class="grid-overlay"></div>
+          </div>
+          <div class="hero-content">
+            <div class="hero-badge">🛡️ Trusted Mental Health Monitoring</div>
+            <h1 class="hero-title">
+              Understand.<br /><em>Detect.</em> Support.
+            </h1>
+            <p class="hero-sub">
+              MindGuard uses AI to detect early signs of mental health concerns
+              — mood, sleep, anxiety, stress — and instantly alerts your trusted
+              support network.
+            </p>
+            <div class="hero-actions">
+              <button class="btn-primary btn-lg" onclick="showPage('login')">
+                Start Free Check-In
+              </button>
+              <button
+                class="btn-ghost btn-lg"
+                onclick="
+                  document
+                    .getElementById('features')
+                    .scrollIntoView({ behavior: 'smooth' })
+                "
+              >
+                How It Works ↓
+              </button>
             </div>
-            <div class="ec-body" id="ecBody">
-              <p class="ec-desc">If risk is detected, MindGuard will alert this person and share the check-in with the admin dashboard.</p>
-              <div class="form-group">
-                <label>Contact Name</label>
-                <input type="text" id="ecName" placeholder="e.g. Mom, Dr. Smith" class="form-input">
+            <div class="hero-stats">
+              <div class="stat">
+                <span class="stat-num">94%</span
+                ><span class="stat-label">Early detection accuracy</span>
               </div>
-              <div class="form-group">
-                <label>Contact Email</label>
-                <input type="email" id="ecEmail" placeholder="family@example.com" class="form-input">
+              <div class="stat">
+                <span class="stat-num">3 min</span
+                ><span class="stat-label">Daily check-in time</span>
               </div>
-              <div class="form-group">
-                <label>Relationship</label>
-                <select id="ecRelation" class="form-input">
-                  <option>Parent/Guardian</option>
-                  <option>Counselor</option>
-                  <option>Teacher</option>
-                  <option>Sibling</option>
-                  <option>Friend</option>
-                  <option>Doctor</option>
-                </select>
+              <div class="stat">
+                <span class="stat-num">100%</span
+                ><span class="stat-label">Private & secure</span>
               </div>
             </div>
           </div>
-
-          <button class="btn-primary btn-full" onclick="login()">Sign In →</button>
-          <p class="auth-switch">New here? <a href="#" onclick="showPage('register')">Create account</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: REGISTER ===== -->
-  <div id="page-register" class="page">
-    <div class="auth-layout">
-      <div class="auth-visual">
-        <div class="auth-visual-bg"></div>
-        <div class="auth-visual-content">
-          <div class="auth-brand">🧠 MindGuard</div>
-          <h2>"Every data point tells a story."</h2>
-          <p>Join thousands tracking their mental health with MindGuard.</p>
-        </div>
-      </div>
-      <div class="auth-form-wrap">
-        <div class="auth-form">
-          <div class="auth-logo">🧠 <span>MindGuard</span></div>
-          <h2>Create Account</h2>
-          <div class="role-tabs">
-            <button class="role-tab active" onclick="setRole('user', this)">🙋 User</button>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>First Name</label><input type="text" id="regFirst" placeholder="Jane" class="form-input"></div>
-            <div class="form-group"><label>Last Name</label><input type="text" id="regLast" placeholder="Doe" class="form-input"></div>
-          </div>
-          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com" class="form-input"></div>
-          <div class="form-group"><label>Password</label>
-            <div class="input-wrap"><input type="password" id="regPass" placeholder="Min. 8 characters" class="form-input"><button class="toggle-pass" onclick="togglePass('regPass')" type="button">👁</button></div>
-          </div>
-          <div class="form-group"><label>Emergency Contact Name (Family/Counselor)</label><input type="text" id="regEcName" placeholder="Parent or Counselor Name" class="form-input"></div>
-          <div class="form-group"><label>Emergency Contact Email</label><input type="email" id="regEcEmail" placeholder="family@example.com" class="form-input"></div>
-          <button class="btn-primary btn-full" onclick="register()">Create Account →</button>
-          <p class="auth-switch">Already have an account? <a href="#" onclick="showPage('login')">Sign in</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: DASHBOARD ===== -->
-  <div id="page-dashboard" class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <div>
-          <h1 id="dashGreeting">Good Morning! 👋</h1>
-          <p id="dashDate" class="page-sub"></p>
-        </div>
-        <div class="header-actions">
-          <button class="btn-outline" onclick="showPage('track')">+ Daily Check-In</button>
-          <button class="btn-primary" onclick="showPage('ai-chat')">🤖 AI Chat</button>
-        </div>
-      </div>
-
-      <!-- ALERT BANNER -->
-      <div class="alert-banner" id="alertBanner" style="display:none">
-        <div class="alert-icon">⚠️</div>
-        <div class="alert-text">
-          <strong id="alertBannerText">Mental health concerns detected.</strong>
-          <a href="#" onclick="showPage('wellness')"> View Tips →</a>
-        </div>
-        <button onclick="document.getElementById('alertBanner').style.display='none'">✕</button>
-      </div>
-
-      <!-- HEALTH SCORE CARD -->
-      <div class="health-score-card" id="healthScoreCard">
-        <div class="hs-left">
-          <div class="hs-label">Your Mental Health Score</div>
-          <div class="hs-score" id="dashHealthScore">—</div>
-          <div class="hs-status" id="dashHealthStatus">Complete today's check-in</div>
-          <button class="btn-primary" onclick="showPage('track')" style="margin-top:1rem">Take Today's Check-In</button>
-        </div>
-        <div class="hs-right">
-          <div class="hs-breakdown" id="dashBreakdown">
-            <div class="hsb-item"><span>🎭 Mood</span><span id="hsMood">—</span></div>
-            <div class="hsb-item"><span>🌙 Sleep</span><span id="hsSleep">—</span></div>
-            <div class="hsb-item"><span>🏃 Activity</span><span id="hsActivity">—</span></div>
-            <div class="hsb-item"><span>💬 Social</span><span id="hsSocial">—</span></div>
-            <div class="hsb-item"><span>🧠 Psychological</span><span id="hsPsych">—</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-card-icon" style="background:#e8f5e9;color:#2e7d32">🏃</div>
-          <div><div class="stat-card-label">Avg Activity</div><div class="stat-card-val">72%</div><div class="stat-trend up">↑ 5% this week</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon" style="background:#e3f2fd;color:#1565c0">💬</div>
-          <div><div class="stat-card-label">Avg Social</div><div class="stat-card-val">68%</div><div class="stat-trend down">↓ 8% vs last week</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon" style="background:#fce4ec;color:#c62828">🌙</div>
-          <div><div class="stat-card-label">Avg Sleep</div><div class="stat-card-val">6.5 hrs</div><div class="stat-trend down">↓ 0.5 hrs from target</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-card-icon" style="background:#fff3e0;color:#e65100">😊</div>
-          <div><div class="stat-card-label">Avg Mood</div><div class="stat-card-val">7.1/10</div><div class="stat-trend up">↑ 0.3 pts</div></div>
-        </div>
-      </div>
-
-      <div class="dashboard-grid">
-        <div class="dash-card wide">
-          <div class="card-header">
-            <h3>Wellbeing Problem Map</h3>
-            <div class="chart-legend">
-              <span class="legend-dot" style="background:#2563eb"></span>Mood
-              <span class="legend-dot" style="background:#dc2626"></span>Stress
-              <span class="legend-dot" style="background:#059669"></span>Sleep
+          <div class="hero-visual">
+            <img
+              class="hero-photo"
+              src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=900&q=80"
+              alt="Calm person journaling beside a window"
+            />
+            <div class="dashboard-preview">
+              <div class="preview-card mood">
+                <div class="pcard-icon">😊</div>
+                <div class="pcard-info">
+                  <div class="pcard-title">Mood Score</div>
+                  <div class="pcard-val">7.2/10</div>
+                </div>
+                <div class="mini-chart">
+                  <div class="bar" style="height: 60%"></div>
+                  <div class="bar" style="height: 80%"></div>
+                  <div class="bar" style="height: 55%"></div>
+                  <div class="bar" style="height: 90%"></div>
+                  <div class="bar" style="height: 72%"></div>
+                </div>
+              </div>
+              <div class="preview-card sleep">
+                <div class="pcard-icon">🌙</div>
+                <div class="pcard-info">
+                  <div class="pcard-title">Sleep Quality</div>
+                  <div class="pcard-val">6.8 hrs</div>
+                </div>
+                <div class="mini-chart">
+                  <div class="bar" style="height: 85%"></div>
+                  <div class="bar" style="height: 68%"></div>
+                  <div class="bar" style="height: 72%"></div>
+                  <div class="bar" style="height: 55%"></div>
+                  <div class="bar" style="height: 80%"></div>
+                </div>
+              </div>
+              <div class="preview-card alert-card">
+                <div class="alert-dot"></div>
+                <div class="pcard-icon">⚡</div>
+                <div class="pcard-info">
+                  <div class="pcard-title">Alert Sent To Family</div>
+                  <div class="pcard-val">Auto-Notified</div>
+                </div>
+              </div>
             </div>
           </div>
-          <canvas id="trendChart"></canvas>
-        </div>
+        </section>
 
-        <div class="dash-card">
-          <div class="card-header"><h3>🔔 Recent Alerts</h3><button class="card-btn" onclick="showPage('reports')">View All</button></div>
-          <div class="alert-list" id="alertList"></div>
-        </div>
-
-        <div class="dash-card">
-          <div class="card-header"><h3>💡 Wellness Tips</h3></div>
-          <div class="tips-list" id="dashTipsList">
-            <div class="tip-item">🧘 Try 5 minutes of deep breathing today</div>
-            <div class="tip-item">🚶 A 20-min walk boosts mood by up to 30%</div>
-            <div class="tip-item">📱 Limit screen time before bed for better sleep</div>
-            <div class="tip-item">🤝 Reach out to one friend today</div>
+        <section class="features" id="features">
+          <div class="section-header">
+            <div class="section-tag">What We Monitor</div>
+            <h2>Six Pillars of Mental Wellbeing</h2>
+            <p>
+              Comprehensive daily tracking that understands your mind and body —
+              and alerts loved ones when you need support.
+            </p>
           </div>
-          <button class="card-btn" onclick="showPage('wellness')" style="margin-top:1rem;display:block">View Wellness Hub →</button>
-        </div>
-
-        <div class="dash-card">
-          <div class="card-header"><h3>📊 Check-In Progress</h3></div>
-          <div class="donut-wrap">
-            <canvas id="donutChart" width="180" height="180"></canvas>
-            <div class="donut-center"><span class="donut-val">78%</span><span class="donut-label">This Week</span></div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feat-icon">🎭</div>
+              <h3>Mood & Emotions</h3>
+              <p>
+                Daily emotion check-ins with AI pattern detection to identify
+                depression, anxiety, or mood disorders early.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feat-icon">🌙</div>
+              <h3>Sleep Patterns</h3>
+              <p>
+                Monitor sleep quality, duration and consistency — poor sleep is
+                one of the earliest signs of mental health changes.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feat-icon">🏃</div>
+              <h3>Physical Activity</h3>
+              <p>
+                Track movement and exercise — activity levels directly correlate
+                with mental health and motivation.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feat-icon">💬</div>
+              <h3>Social Interaction</h3>
+              <p>
+                Detect withdrawal, isolation or conflict patterns in your social
+                interactions.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feat-icon">🧠</div>
+              <h3>Psychological State</h3>
+              <p>
+                Advanced psychological MCQ assessments based on PHQ-9, GAD-7 and
+                similar validated instruments.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feat-icon">🔔</div>
+              <h3>Family Alerts</h3>
+              <p>
+                Automatically notifies your trusted contacts — family or
+                counselors — when risk indicators are detected.
+              </p>
+            </div>
           </div>
-          <div class="donut-legend">
-            <div class="dl-item"><span class="dl-dot" style="background:#6366f1"></span>Completed (78%)</div>
-            <div class="dl-item"><span class="dl-dot" style="background:#e2e8f0"></span>Missed (22%)</div>
+        </section>
+
+        <section class="how-it-works">
+          <div class="section-header">
+            <div class="section-tag">The Process</div>
+            <h2>Simple, Private, Life-Changing</h2>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: TRACK (Daily Check-In) ===== -->
-  <div id="page-track" class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <div>
-          <h1>Daily Check-In 📋</h1>
-          <p class="page-sub">How are you doing today? Takes about 3 minutes.</p>
-        </div>
-        <div class="progress-ring-wrap">
-          <div class="progress-label" id="trackProgress">Step 1 of 5</div>
-        </div>
-      </div>
-
-      <div class="track-steps">
-        <div class="step-tab active" id="stab-1" onclick="goStep(1)"><span>🎭</span><span class="tab-label">Mood</span></div>
-        <div class="step-tab" id="stab-2" onclick="goStep(2)"><span>🌙</span><span class="tab-label">Sleep</span></div>
-        <div class="step-tab" id="stab-3" onclick="goStep(3)"><span>🏃</span><span class="tab-label">Activity</span></div>
-        <div class="step-tab" id="stab-4" onclick="goStep(4)"><span>💬</span><span class="tab-label">Social</span></div>
-        <div class="step-tab" id="stab-5" onclick="goStep(5)"><span>🧠</span><span class="tab-label">Psychology</span></div>
-      </div>
-
-      <!-- STEP 1: MOOD -->
-      <div class="track-step" id="step-1">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🎭</div><div><h3>Mood & Emotions</h3><p>Clear questions about interest, sadness, and emotional changes.</p></div></div>
-          <div class="track-body">
-            <label class="track-label">Overall Mood <span class="label-hint">(1 = Very Low, 10 = Amazing)</span></label>
-            <div class="emoji-scale">
-              <span>😢</span>
-              <input type="range" id="moodScore" min="1" max="10" value="7" oninput="updateEmoji('mood', this.value)" class="slider">
-              <span>😄</span>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div class="step-icon">📝</div>
+              <h4>Daily Check-In</h4>
+              <p>
+                Answer a 3-minute questionnaire covering mood, sleep, activity,
+                psychology and social wellbeing.
+              </p>
             </div>
-            <div class="scale-val" id="moodVal">7 — 😊 Good</div>
-
-            <label class="track-label" style="margin-top:1.5rem">What emotions are you feeling right now? <span class="label-hint">(select all)</span></label>
-            <div class="emotion-chips" id="emotionChips">
-              <button class="chip" onclick="toggleChip(this)">😰 Anxious</button>
-              <button class="chip" onclick="toggleChip(this)">😔 Sad</button>
-              <button class="chip" onclick="toggleChip(this)">😌 Calm</button>
-              <button class="chip" onclick="toggleChip(this)">😊 Happy</button>
-              <button class="chip" onclick="toggleChip(this)">😤 Frustrated</button>
-              <button class="chip" onclick="toggleChip(this)">😳 Stressed</button>
-              <button class="chip" onclick="toggleChip(this)">🤩 Excited</button>
-              <button class="chip" onclick="toggleChip(this)">😞 Hopeless</button>
-              <button class="chip" onclick="toggleChip(this)">💪 Motivated</button>
-              <button class="chip" onclick="toggleChip(this)">😶 Numb</button>
-              <button class="chip" onclick="toggleChip(this)">😡 Angry</button>
-              <button class="chip" onclick="toggleChip(this)">🥺 Overwhelmed</button>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div class="step-icon">🤖</div>
+              <h4>AI Analysis</h4>
+              <p>
+                Our AI compares your entries to baselines and recognized
+                psychological patterns to score your mental health.
+              </p>
             </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did you lose interest in activities you normally enjoy?</label>
-            <div class="mcq-group" id="mq1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq1',3)"><span class="mcq-mark"></span>Nearly every day</div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div class="step-icon">⚠️</div>
+              <h4>Risk Detection</h4>
+              <p>
+                When weakness or risk is detected, you receive personalized tips
+                and an immediate alert is sent to your support network.
+              </p>
             </div>
-
-            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did you feel sad, empty, depressed, or hopeless?</label>
-            <div class="mcq-group" id="mq2">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq2',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq2',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq2',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq2',3)"><span class="mcq-mark"></span>Nearly every day</div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+              <div class="step-num">04</div>
+              <div class="step-icon">🤝</div>
+              <h4>Get Support</h4>
+              <p>
+                Family members or counselors are notified so you get timely help
+                before a crisis occurs.
+              </p>
             </div>
-
-            <label class="track-label" style="margin-top:1rem">Any notes about your mood today?</label>
-            <textarea class="form-input" id="moodNotes" rows="3" placeholder="Optional — share what's on your mind..."></textarea>
           </div>
-          <div class="track-footer">
-            <div></div>
-            <button class="btn-primary" onclick="goStep(2)">Next: Sleep →</button>
+        </section>
+
+        <footer class="footer">
+          <div class="footer-inner">
+            <div class="footer-brand"><span>🧠</span> MindGuard</div>
+            <p>
+              © 2025 MindGuard. Your mental health matters. Built with care.
+            </p>
+            <div class="footer-links">
+              <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a
+              ><a href="#">Crisis Help</a>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- STEP 2: SLEEP -->
-      <div class="track-step hidden" id="step-2">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🌙</div><div><h3>Sleep Quality</h3><p>Sleep changes can affect mood, anxiety, focus, and energy.</p></div></div>
-          <div class="track-body">
-            <label class="track-label">Hours of Sleep Last Night</label>
-            <div class="emoji-scale">
-              <span>😴</span>
-              <input type="range" id="sleepHours" min="1" max="12" value="7" step="0.5" oninput="updateSleepVal(this.value)" class="slider">
-              <span>🌟</span>
-            </div>
-            <div class="scale-val" id="sleepVal">7 hours</div>
-
-            <label class="track-label" style="margin-top:1.5rem">Sleep Quality</label>
-            <div class="qual-options" id="sleepQual">
-              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😫</div><div>Very Poor</div></div>
-              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😕</div><div>Poor</div></div>
-              <div class="qual-opt active" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😐</div><div>Fair</div></div>
-              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">😊</div><div>Good</div></div>
-              <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">🌟</div><div>Excellent</div></div>
-            </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did sleep problems affect you: difficulty falling asleep, waking often, waking too early, or sleeping too much?</label>
-            <div class="mcq-group" id="mq_sleep1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Sleep Issues (select any that apply)</label>
-            <div class="emotion-chips">
-              <button class="chip" onclick="toggleChip(this)">😰 Nightmares</button>
-              <button class="chip" onclick="toggleChip(this)">🔄 Restless</button>
-              <button class="chip" onclick="toggleChip(this)">⏰ Woke early</button>
-              <button class="chip" onclick="toggleChip(this)">💭 Racing thoughts</button>
-              <button class="chip" onclick="toggleChip(this)">😓 Night sweats</button>
-              <button class="chip" onclick="toggleChip(this)">✅ No issues</button>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">What time did you go to bed?</label>
-            <input type="time" class="form-input" id="bedTime" value="22:30">
-          </div>
-          <div class="track-footer">
-            <button class="btn-outline" onclick="goStep(1)">← Back</button>
-            <button class="btn-primary" onclick="goStep(3)">Next: Activity →</button>
-          </div>
-        </div>
+        </footer>
       </div>
 
-      <!-- STEP 3: ACTIVITY -->
-      <div class="track-step hidden" id="step-3">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🏃</div><div><h3>Physical Activity</h3><p>Energy, movement, appetite, and daily routine give useful mental-health signals.</p></div></div>
-          <div class="track-body">
-            <label class="track-label">Exercise / Physical Activity Level</label>
-            <div class="activity-grid">
-              <div class="act-opt" onclick="selectAct(this)"><div class="act-icon">🛋️</div><div class="act-label">Sedentary</div><div class="act-sub">No activity</div></div>
-              <div class="act-opt" onclick="selectAct(this)"><div class="act-icon">🚶</div><div class="act-label">Light</div><div class="act-sub">Short walk</div></div>
-              <div class="act-opt active" onclick="selectAct(this)"><div class="act-icon">🚴</div><div class="act-label">Moderate</div><div class="act-sub">30 min exercise</div></div>
-              <div class="act-opt" onclick="selectAct(this)"><div class="act-icon">🏋️</div><div class="act-label">Active</div><div class="act-sub">60+ min workout</div></div>
-              <div class="act-opt" onclick="selectAct(this)"><div class="act-icon">⚡</div><div class="act-label">Very Active</div><div class="act-sub">Intense training</div></div>
+      <!-- ===== PAGE: LOGIN ===== -->
+      <div id="page-login" class="page">
+        <div class="auth-layout">
+          <div class="auth-visual">
+            <div class="auth-visual-bg"></div>
+            <div class="auth-visual-content">
+              <div class="auth-brand">🧠 MindGuard</div>
+              <h2>"Early support changes everything."</h2>
+              <p>
+                Helping people identify mental health needs before they become
+                crises.
+              </p>
+              <div class="auth-features">
+                <div class="af-item">
+                  ✅ Shared admin updates across devices
+                </div>
+                <div class="af-item">✅ Family alert system</div>
+                <div class="af-item">✅ AI-powered mental health insights</div>
+              </div>
             </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did low energy, tiredness, or body heaviness make daily tasks harder?</label>
-            <div class="mcq-group" id="mq_act1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Did you eat regular meals today?</label>
-            <div class="qual-options" id="mealQual">
-              <div class="qual-opt" onclick="selectQual(this,'mealQual')"><div class="qual-icon">❌</div><div>Skipped all</div></div>
-              <div class="qual-opt" onclick="selectQual(this,'mealQual')"><div class="qual-icon">🍎</div><div>Partial</div></div>
-              <div class="qual-opt active" onclick="selectQual(this,'mealQual')"><div class="qual-icon">🥗</div><div>Most meals</div></div>
-              <div class="qual-opt" onclick="selectQual(this,'mealQual')"><div class="qual-icon">🍽️</div><div>All meals</div></div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Approx steps today (optional)</label>
-            <input type="number" class="form-input" id="stepsCount" placeholder="e.g. 5000" min="0" max="50000">
           </div>
-          <div class="track-footer">
-            <button class="btn-outline" onclick="goStep(2)">← Back</button>
-            <button class="btn-primary" onclick="goStep(4)">Next: Social →</button>
+          <div class="auth-form-wrap">
+            <div class="auth-form">
+              <div class="auth-logo">🧠 <span>MindGuard</span></div>
+              <h2>Welcome Back</h2>
+              <p class="auth-sub">
+                Sign in to continue your mental wellness journey
+              </p>
+
+              <div class="role-tabs">
+                <button class="role-tab active" onclick="setRole('user', this)">
+                  🙋 User
+                </button>
+                <button class="role-tab" onclick="setRole('admin', this)">
+                  🏫 Admin
+                </button>
+              </div>
+
+              <div class="form-group" id="loginNameGroup">
+                <label>Your Name</label>
+                <input
+                  type="text"
+                  id="loginName"
+                  placeholder="Registered users can leave this blank"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  id="loginEmail"
+                  placeholder="you@example.com"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrap">
+                  <input
+                    type="password"
+                    id="loginPass"
+                    placeholder="••••••••"
+                    class="form-input"
+                  />
+                  <button
+                    class="toggle-pass"
+                    onclick="togglePass('loginPass')"
+                    type="button"
+                  >
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <!-- Family/Counselor Contact -->
+              <div class="emergency-contact-section">
+                <div class="ec-header" onclick="toggleEcSection()">
+                  <span>🔔 Family / Counselor Alert Contact</span>
+                  <span id="ecToggleIcon">▼</span>
+                </div>
+                <div class="ec-body" id="ecBody">
+                  <p class="ec-desc">
+                    If risk is detected, MindGuard will alert this person and
+                    share the check-in with the admin dashboard.
+                  </p>
+                  <div class="form-group">
+                    <label>Contact Name</label>
+                    <input
+                      type="text"
+                      id="ecName"
+                      placeholder="e.g. Mom, Dr. Smith"
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Contact Email</label>
+                    <input
+                      type="email"
+                      id="ecEmail"
+                      placeholder="family@example.com"
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Relationship</label>
+                    <select id="ecRelation" class="form-input">
+                      <option>Parent/Guardian</option>
+                      <option>Counselor</option>
+                      <option>Teacher</option>
+                      <option>Sibling</option>
+                      <option>Friend</option>
+                      <option>Doctor</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn-primary btn-full" onclick="login()">
+                Sign In →
+              </button>
+              <p class="auth-switch">
+                New here?
+                <a href="#" onclick="showPage('register')">Create account</a>
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- STEP 4: SOCIAL -->
-      <div class="track-step hidden" id="step-4">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">💬</div><div><h3>Communication & Social Connection</h3><p>These questions look at isolation, support, conflict, and ability to communicate.</p></div></div>
-          <div class="track-body">
-            <label class="track-label">Social Interaction Level Today</label>
-            <div class="emoji-scale">
-              <span>🙈</span>
-              <input type="range" id="socialScore" min="1" max="10" value="6" oninput="updateSocialVal(this.value)" class="slider">
-              <span>🎉</span>
-            </div>
-            <div class="scale-val" id="socialVal">6 — Moderate interaction</div>
-
-            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did you avoid calls, messages, friends, family, class, or work because you did not feel emotionally able?</label>
-            <div class="mcq-group" id="mq_soc1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',0)"><span class="mcq-mark"></span>Not at all — I enjoy social time</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',1)"><span class="mcq-mark"></span>A little — I prefer quiet lately</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',2)"><span class="mcq-mark"></span>Yes — I've been withdrawing</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',3)"><span class="mcq-mark"></span>Completely — I want to be alone</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Right now, how supported and understood do you feel by the people around you?</label>
-            <div class="mcq-group" id="mq_soc2">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',0)"><span class="mcq-mark"></span>Strong and supportive</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',1)"><span class="mcq-mark"></span>Okay, nothing special</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',2)"><span class="mcq-mark"></span>Strained or distant</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',3)"><span class="mcq-mark"></span>Lonely and disconnected</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">How you're feeling socially (select any)</label>
-            <div class="emotion-chips">
-              <button class="chip" onclick="toggleChip(this)">🙂 Connected</button>
-              <button class="chip" onclick="toggleChip(this)">😕 Isolated</button>
-              <button class="chip" onclick="toggleChip(this)">😐 Neutral</button>
-              <button class="chip" onclick="toggleChip(this)">😟 Lonely</button>
-              <button class="chip" onclick="toggleChip(this)">🥳 Social</button>
-              <button class="chip" onclick="toggleChip(this)">😤 In conflict</button>
-              <button class="chip" onclick="toggleChip(this)">🤝 Supported</button>
+      <!-- ===== PAGE: REGISTER ===== -->
+      <div id="page-register" class="page">
+        <div class="auth-layout">
+          <div class="auth-visual">
+            <div class="auth-visual-bg"></div>
+            <div class="auth-visual-content">
+              <div class="auth-brand">🧠 MindGuard</div>
+              <h2>"Every data point tells a story."</h2>
+              <p>Join thousands tracking their mental health with MindGuard.</p>
             </div>
           </div>
-          <div class="track-footer">
-            <button class="btn-outline" onclick="goStep(3)">← Back</button>
-            <button class="btn-primary" onclick="goStep(5)">Next: Psychology →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 5: PSYCHOLOGICAL -->
-      <div class="track-step hidden" id="step-5">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🧠</div><div><h3>Psychology Screening</h3><p>At least 7 screening questions help estimate stress, anxiety, depression, and functioning.</p></div></div>
-          <div class="track-body">
-
-            <div class="psych-disclaimer">⚕️ This is a self-assessment tool, not a clinical diagnosis. Results help identify patterns and are not a substitute for professional care.</div>
-
-            <label class="track-label">Over the last 2 weeks, how often did you feel nervous, anxious, tense, or on edge?</label>
-            <div class="mcq-group" id="mq_anx1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',3)"><span class="mcq-mark"></span>Nearly every day</div>
+          <div class="auth-form-wrap">
+            <div class="auth-form">
+              <div class="auth-logo">🧠 <span>MindGuard</span></div>
+              <h2>Create Account</h2>
+              <div class="role-tabs">
+                <button class="role-tab active" onclick="setRole('user', this)">
+                  🙋 User
+                </button>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>First Name</label
+                  ><input
+                    type="text"
+                    id="regFirst"
+                    placeholder="Jane"
+                    class="form-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Last Name</label
+                  ><input
+                    type="text"
+                    id="regLast"
+                    placeholder="Doe"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Email</label
+                ><input
+                  type="email"
+                  id="regEmail"
+                  placeholder="you@example.com"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrap">
+                  <input
+                    type="password"
+                    id="regPass"
+                    placeholder="Min. 8 characters"
+                    class="form-input"
+                  /><button
+                    class="toggle-pass"
+                    onclick="togglePass('regPass')"
+                    type="button"
+                  >
+                    👁
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Emergency Contact Name (Family/Counselor)</label
+                ><input
+                  type="text"
+                  id="regEcName"
+                  placeholder="Parent or Counselor Name"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-group">
+                <label>Emergency Contact Email</label
+                ><input
+                  type="email"
+                  id="regEcEmail"
+                  placeholder="family@example.com"
+                  class="form-input"
+                />
+              </div>
+              <button class="btn-primary btn-full" onclick="register()">
+                Create Account →
+              </button>
+              <p class="auth-switch">
+                Already have an account?
+                <a href="#" onclick="showPage('login')">Sign in</a>
+              </p>
             </div>
-
-            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often were you unable to stop or control worrying once it started?</label>
-            <div class="mcq-group" id="mq_anx2">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did concentration problems affect studying, work, reading, or conversations?</label>
-            <div class="mcq-group" id="mq_conc1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did you strongly criticize yourself, feel like a failure, or feel you disappointed others?</label>
-            <div class="mcq-group" id="mq_self1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did others notice you moving or speaking much slower than usual, or being unusually restless?</label>
-            <div class="mcq-group" id="mq_psych1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',0)"><span class="mcq-mark"></span>Not at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',1)"><span class="mcq-mark"></span>Several days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',2)"><span class="mcq-mark"></span>More than half the days</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',3)"><span class="mcq-mark"></span>Nearly every day</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Overall, how much did these problems interfere with study, work, home responsibilities, or relationships?</label>
-            <div class="mcq-group" id="mq_diff1">
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',0)"><span class="mcq-mark"></span>Not difficult at all</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',1)"><span class="mcq-mark"></span>Somewhat difficult</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',2)"><span class="mcq-mark"></span>Very difficult</div>
-              <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',3)"><span class="mcq-mark"></span>Extremely difficult</div>
-            </div>
-
-            <label class="track-label" style="margin-top:1rem">Your stress level right now (1=very calm, 10=extremely stressed)</label>
-            <div class="emoji-scale">
-              <span>😌</span>
-              <input type="range" id="stressScore" min="1" max="10" value="4" oninput="updateStressVal(this.value)" class="slider">
-              <span>😤</span>
-            </div>
-            <div class="scale-val" id="stressVal">4 — Manageable stress</div>
-
-            <label class="track-label" style="margin-top:1.5rem">Any additional thoughts you'd like to share?</label>
-            <textarea class="form-input" id="generalNotes" rows="3" placeholder="Anything on your mind — completely private and stays on this device..."></textarea>
-          </div>
-          <div class="track-footer">
-            <button class="btn-outline" onclick="goStep(4)">← Back</button>
-            <button class="btn-primary" onclick="submitLog()">Submit Check-In ✓</button>
           </div>
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- ===== PAGE: REPORTS ===== -->
-  <div id="page-reports" class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <div>
-          <h1>Reports & Analytics 📊</h1>
-          <p class="page-sub">Comprehensive wellbeing analysis</p>
-        </div>
-        <div class="header-actions">
-          <select class="form-input" id="reportPeriod" onchange="updateReports()" style="width:auto">
-            <option>Last 7 Days</option>
-            <option>Last 30 Days</option>
-            <option>This Month</option>
-          </select>
-          <button class="btn-primary" onclick="exportReport()">Download PDF</button>
-        </div>
-      </div>
-
-      <div class="search-bar">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="studentSearch" placeholder="Search by name or ID..." class="search-input" oninput="filterStudents()">
-      </div>
-
-      <div class="reports-grid">
-        <div class="dash-card wide">
-          <div class="card-header"><h3>🚨 Active Behaviour Alerts</h3></div>
-          <div class="alerts-table" id="alertsTable"></div>
-        </div>
-
-        <div class="dash-card">
-          <div class="card-header"><h3>Problem Trend Over Time</h3></div>
-          <canvas id="changeChart"></canvas>
-        </div>
-
-        <div class="dash-card">
-          <div class="card-header"><h3>Risk Meaning</h3></div>
-          <canvas id="riskChart"></canvas>
-        </div>
-
-        <div class="dash-card wide">
-          <div class="card-header"><h3>👥 Student Profiles</h3></div>
-          <div class="student-grid" id="studentGrid"></div>
-        </div>
-      </div>
-
-      <div class="modal-overlay" id="studentModal" onclick="closeModal()">
-        <div class="modal" onclick="event.stopPropagation()">
-          <button class="modal-close" onclick="closeModal()">✕</button>
-          <div id="modalContent"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: AI CHAT ===== -->
-  <div id="page-ai-chat" class="page">
-    <div class="chat-layout">
-      <div class="chat-sidebar">
-        <div class="chat-sidebar-header">
-          <h3>🤖 AI Assistant</h3>
-          <button class="btn-outline btn-sm" onclick="newChat()">+ New</button>
-        </div>
-        <div class="chat-suggestions">
-          <p>Suggested questions:</p>
-          <button class="sugg-btn" onclick="askSuggestion(this)">What does my mental health score mean?</button>
-          <button class="sugg-btn" onclick="askSuggestion(this)">How can I improve my sleep?</button>
-          <button class="sugg-btn" onclick="askSuggestion(this)">Tips for managing anxiety today</button>
-          <button class="sugg-btn" onclick="askSuggestion(this)">Explain the mood-sleep connection</button>
-          <button class="sugg-btn" onclick="askSuggestion(this)">I'm feeling overwhelmed, help me</button>
-        </div>
-        <div class="web-search-toggle">
-          <label class="toggle-row">
-            <span>🌐 Web Search</span>
-            <input type="checkbox" id="webSearchToggle" onchange="toggleWebSearch(this)">
-            <div class="toggle-switch"></div>
-          </label>
-          <p class="toggle-desc">Enable to search latest mental health research</p>
-        </div>
-      </div>
-      <div class="chat-main">
-        <div class="chat-messages" id="chatMessages">
-          <div class="msg ai">
-            <div class="msg-avatar">🤖</div>
-            <div class="msg-bubble">
-              <p>Hello! I'm your MindGuard AI wellness assistant. I can help you:</p>
-              <ul>
-                <li>Understand your mental health scores and patterns</li>
-                <li>Provide coping strategies for anxiety, stress, or low mood</li>
-                <li>Answer questions about sleep, mood, and psychological wellbeing</li>
-                <li>Search the latest mental health research</li>
-              </ul>
-              <p>What's on your mind today?</p>
+      <!-- ===== PAGE: DASHBOARD ===== -->
+      <div id="page-dashboard" class="page">
+        <div class="page-container">
+          <div class="page-header">
+            <div>
+              <h1 id="dashGreeting">Good Morning! 👋</h1>
+              <p id="dashDate" class="page-sub"></p>
+            </div>
+            <div class="header-actions">
+              <button class="btn-outline" onclick="showPage('track')">
+                + Daily Check-In
+              </button>
+              <button class="btn-primary" onclick="showPage('ai-chat')">
+                🤖 AI Chat
+              </button>
             </div>
           </div>
-        </div>
-        <div class="chat-input-area">
-          <div class="chat-input-wrap">
-            <textarea id="chatInput" placeholder="Ask anything about your mental health or wellbeing..." rows="1" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
-            <button class="send-btn" onclick="sendChat()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+
+          <!-- ALERT BANNER -->
+          <div class="alert-banner" id="alertBanner" style="display: none">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-text">
+              <strong id="alertBannerText"
+                >Mental health concerns detected.</strong
+              >
+              <a href="#" onclick="showPage('wellness')"> View Tips →</a>
+            </div>
+            <button
+              onclick="
+                document.getElementById('alertBanner').style.display = 'none'
+              "
+            >
+              ✕
             </button>
           </div>
-          <p class="chat-hint">AI powered by Claude · Press Enter to send · Shift+Enter for new line</p>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ===== PAGE: WELLNESS HUB ===== -->
-  <div id="page-wellness" class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <div>
-          <h1>Wellness Hub 💚</h1>
-          <p class="page-sub">Personalized tips, resources and crisis support</p>
-        </div>
-      </div>
-
-      <div id="wellnessContent">
-        <!-- Filled by JS based on user's score -->
-      </div>
-
-      <div class="wellness-grid">
-        <div class="wellness-card">
-          <div class="wc-icon">🧘</div>
-          <h3>Mindfulness</h3>
-          <p>5-minute guided exercises to calm your mind and reduce anxiety.</p>
-          <div class="wc-tips" id="wcTipsMindful"></div>
-        </div>
-        <div class="wellness-card">
-          <div class="wc-icon">💤</div>
-          <h3>Better Sleep</h3>
-          <p>Evidence-based sleep hygiene tips to improve quality and duration.</p>
-          <div class="wc-tips" id="wcTipsSleep"></div>
-        </div>
-        <div class="wellness-card">
-          <div class="wc-icon">🏃</div>
-          <h3>Move Your Body</h3>
-          <p>Physical activity is medicine for your mind — here's how to start.</p>
-          <div class="wc-tips" id="wcTipsActivity"></div>
-        </div>
-        <div class="wellness-card">
-          <div class="wc-icon">🤝</div>
-          <h3>Stay Connected</h3>
-          <p>Strategies to rebuild social connections when you're feeling isolated.</p>
-          <div class="wc-tips" id="wcTipsSocial"></div>
-        </div>
-      </div>
-
-      <div class="crisis-banner">
-        <div class="crisis-icon">🆘</div>
-        <div class="crisis-content">
-          <h3>Crisis Support</h3>
-          <p>If you or someone you know is in immediate danger or experiencing a mental health crisis:</p>
-          <div class="crisis-links">
-            <a href="tel:iCall" class="crisis-btn">📞 iCall: 9152987821</a>
-            <a href="tel:Vandrevala" class="crisis-btn">📞 Vandrevala Foundation: 1860-2662-345</a>
-            <a href="tel:112" class="crisis-btn emergency">🚨 Emergency: 112</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PAGE: PROFILE ===== -->
-  <div id="page-profile" class="page">
-    <div class="page-container">
-      <div class="page-header">
-        <h1>My Profile 👤</h1>
-      </div>
-      <div class="profile-layout">
-        <div class="profile-card">
-          <div class="profile-avatar-big">
-            <div class="profile-avatar-initials" id="profileAvatarInitials">JD</div>
-          </div>
-          <h2 id="profileName">Your Name</h2>
-          <p id="profileRole" class="profile-role">Individual · MindGuard User</p>
-          <div class="profile-stats">
-            <div><strong id="pDaysLogged">0</strong><span>Days Logged</span></div>
-            <div><strong id="pStreak">0</strong><span>Day Streak 🔥</span></div>
-            <div><strong id="pHealthScore">—</strong><span>Health Score</span></div>
-          </div>
-        </div>
-        <div class="profile-details">
-          <div class="dash-card">
-            <div class="card-header"><h3>Personal Info</h3><button class="card-btn" onclick="saveProfile()">Save Changes</button></div>
-            <div class="form-row">
-              <div class="form-group"><label>First Name</label><input type="text" class="form-input" id="pfFirst"></div>
-              <div class="form-group"><label>Last Name</label><input type="text" class="form-input" id="pfLast"></div>
+          <!-- HEALTH SCORE CARD -->
+          <div class="health-score-card" id="healthScoreCard">
+            <div class="hs-left">
+              <div class="hs-label">Your Mental Health Score</div>
+              <div class="hs-score" id="dashHealthScore">—</div>
+              <div class="hs-status" id="dashHealthStatus">
+                Complete today's check-in
+              </div>
+              <button
+                class="btn-primary"
+                onclick="showPage('track')"
+                style="margin-top: 1rem"
+              >
+                Take Today's Check-In
+              </button>
             </div>
-            <div class="form-group"><label>Email</label><input type="email" class="form-input" id="pfEmail" readonly style="background:var(--bg)"></div>
-            <div class="form-group"><label>Password (new)</label>
-              <div class="input-wrap"><input type="password" class="form-input" id="pfPass" placeholder="Leave blank to keep current"><button class="toggle-pass" onclick="togglePass('pfPass')" type="button">👁</button></div>
+            <div class="hs-right">
+              <div class="hs-breakdown" id="dashBreakdown">
+                <div class="hsb-item">
+                  <span>🎭 Mood</span><span id="hsMood">—</span>
+                </div>
+                <div class="hsb-item">
+                  <span>🌙 Sleep</span><span id="hsSleep">—</span>
+                </div>
+                <div class="hsb-item">
+                  <span>🏃 Activity</span><span id="hsActivity">—</span>
+                </div>
+                <div class="hsb-item">
+                  <span>💬 Social</span><span id="hsSocial">—</span>
+                </div>
+                <div class="hsb-item">
+                  <span>🧠 Psychological</span><span id="hsPsych">—</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="dash-card">
-            <div class="card-header"><h3>🔔 Emergency Contact</h3></div>
-            <p style="font-size:0.85rem;color:var(--text-2);margin-bottom:1rem">This person will be notified if mental health concerns are detected. Stored only on this device.</p>
-            <div class="form-group"><label>Contact Name</label><input type="text" class="form-input" id="pfEcName"></div>
-            <div class="form-group"><label>Contact Email</label><input type="email" class="form-input" id="pfEcEmail"></div>
-            <div class="form-group"><label>Relationship</label>
-              <select class="form-input" id="pfEcRelation">
-                <option>Parent/Guardian</option><option>Counselor</option><option>Teacher</option><option>Sibling</option><option>Friend</option><option>Doctor</option>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div
+                class="stat-card-icon"
+                style="background: #e8f5e9; color: #2e7d32"
+              >
+                🏃
+              </div>
+              <div>
+                <div class="stat-card-label">Avg Activity</div>
+                <div class="stat-card-val">72%</div>
+                <div class="stat-trend up">↑ 5% this week</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div
+                class="stat-card-icon"
+                style="background: #e3f2fd; color: #1565c0"
+              >
+                💬
+              </div>
+              <div>
+                <div class="stat-card-label">Avg Social</div>
+                <div class="stat-card-val">68%</div>
+                <div class="stat-trend down">↓ 8% vs last week</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div
+                class="stat-card-icon"
+                style="background: #fce4ec; color: #c62828"
+              >
+                🌙
+              </div>
+              <div>
+                <div class="stat-card-label">Avg Sleep</div>
+                <div class="stat-card-val">6.5 hrs</div>
+                <div class="stat-trend down">↓ 0.5 hrs from target</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div
+                class="stat-card-icon"
+                style="background: #fff3e0; color: #e65100"
+              >
+                😊
+              </div>
+              <div>
+                <div class="stat-card-label">Avg Mood</div>
+                <div class="stat-card-val">7.1/10</div>
+                <div class="stat-trend up">↑ 0.3 pts</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="dash-card wide">
+              <div class="card-header">
+                <h3>Wellbeing Problem Map</h3>
+                <div class="chart-legend">
+                  <span class="legend-dot" style="background: #2563eb"></span
+                  >Mood
+                  <span class="legend-dot" style="background: #dc2626"></span
+                  >Stress
+                  <span class="legend-dot" style="background: #059669"></span
+                  >Sleep
+                </div>
+              </div>
+              <canvas id="trendChart"></canvas>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header">
+                <h3>🔔 Recent Alerts</h3>
+                <button class="card-btn" onclick="showPage('reports')">
+                  View All
+                </button>
+              </div>
+              <div class="alert-list" id="alertList"></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header"><h3>💡 Wellness Tips</h3></div>
+              <div class="tips-list" id="dashTipsList">
+                <div class="tip-item">
+                  🧘 Try 5 minutes of deep breathing today
+                </div>
+                <div class="tip-item">
+                  🚶 A 20-min walk boosts mood by up to 30%
+                </div>
+                <div class="tip-item">
+                  📱 Limit screen time before bed for better sleep
+                </div>
+                <div class="tip-item">🤝 Reach out to one friend today</div>
+              </div>
+              <button
+                class="card-btn"
+                onclick="showPage('wellness')"
+                style="margin-top: 1rem; display: block"
+              >
+                View Wellness Hub →
+              </button>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header"><h3>📊 Check-In Progress</h3></div>
+              <div class="donut-wrap">
+                <canvas id="donutChart" width="180" height="180"></canvas>
+                <div class="donut-center">
+                  <span class="donut-val">78%</span
+                  ><span class="donut-label">This Week</span>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <div class="dl-item">
+                  <span class="dl-dot" style="background: #6366f1"></span
+                  >Completed (78%)
+                </div>
+                <div class="dl-item">
+                  <span class="dl-dot" style="background: #e2e8f0"></span>Missed
+                  (22%)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: TRACK (Daily Check-In) ===== -->
+      <div id="page-track" class="page">
+        <div class="page-container">
+          <div class="page-header">
+            <div>
+              <h1>Daily Check-In 📋</h1>
+              <p class="page-sub">
+                How are you doing today? Takes about 3 minutes.
+              </p>
+            </div>
+            <div class="progress-ring-wrap">
+              <div class="progress-label" id="trackProgress">Step 1 of 5</div>
+            </div>
+          </div>
+
+          <div class="track-steps">
+            <div class="step-tab active" id="stab-1" onclick="goStep(1)">
+              <span>🎭</span><span class="tab-label">Mood</span>
+            </div>
+            <div class="step-tab" id="stab-2" onclick="goStep(2)">
+              <span>🌙</span><span class="tab-label">Sleep</span>
+            </div>
+            <div class="step-tab" id="stab-3" onclick="goStep(3)">
+              <span>🏃</span><span class="tab-label">Activity</span>
+            </div>
+            <div class="step-tab" id="stab-4" onclick="goStep(4)">
+              <span>💬</span><span class="tab-label">Social</span>
+            </div>
+            <div class="step-tab" id="stab-5" onclick="goStep(5)">
+              <span>🧠</span><span class="tab-label">Psychology</span>
+            </div>
+          </div>
+
+          <!-- STEP 1: MOOD -->
+          <div class="track-step" id="step-1">
+            <div class="track-card">
+              <div class="track-card-header">
+                <div class="tch-icon">🎭</div>
+                <div>
+                  <h3>Mood & Emotions</h3>
+                  <p>
+                    Clear questions about interest, sadness, and emotional
+                    changes.
+                  </p>
+                </div>
+              </div>
+              <div class="track-body">
+                <label class="track-label"
+                  >Overall Mood
+                  <span class="label-hint"
+                    >(1 = Very Low, 10 = Amazing)</span
+                  ></label
+                >
+                <div class="emoji-scale">
+                  <span>😢</span>
+                  <input
+                    type="range"
+                    id="moodScore"
+                    min="1"
+                    max="10"
+                    value="7"
+                    oninput="updateEmoji('mood', this.value)"
+                    class="slider"
+                  />
+                  <span>😄</span>
+                </div>
+                <div class="scale-val" id="moodVal">7 — 😊 Good</div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >What emotions are you feeling right now?
+                  <span class="label-hint">(select all)</span></label
+                >
+                <div class="emotion-chips" id="emotionChips">
+                  <button class="chip" onclick="toggleChip(this)">
+                    😰 Anxious
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😔 Sad
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😌 Calm
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😊 Happy
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😤 Frustrated
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😳 Stressed
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    🤩 Excited
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😞 Hopeless
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    💪 Motivated
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😶 Numb
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😡 Angry
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    🥺 Overwhelmed
+                  </button>
+                </div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Over the last 2 weeks, how often did you lose interest in
+                  activities you normally enjoy?</label
+                >
+                <div class="mcq-group" id="mq1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq1', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq1', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq1', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq1', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Over the last 2 weeks, how often did you feel sad, empty,
+                  depressed, or hopeless?</label
+                >
+                <div class="mcq-group" id="mq2">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq2', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq2', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq2', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq2', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Any notes about your mood today?</label
+                >
+                <textarea
+                  class="form-input"
+                  id="moodNotes"
+                  rows="3"
+                  placeholder="Optional — share what's on your mind..."
+                ></textarea>
+              </div>
+              <div class="track-footer">
+                <div></div>
+                <button class="btn-primary" onclick="goStep(2)">
+                  Next: Sleep →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: SLEEP -->
+          <div class="track-step hidden" id="step-2">
+            <div class="track-card">
+              <div class="track-card-header">
+                <div class="tch-icon">🌙</div>
+                <div>
+                  <h3>Sleep Quality</h3>
+                  <p>
+                    Sleep changes can affect mood, anxiety, focus, and energy.
+                  </p>
+                </div>
+              </div>
+              <div class="track-body">
+                <label class="track-label">Hours of Sleep Last Night</label>
+                <div class="emoji-scale">
+                  <span>😴</span>
+                  <input
+                    type="range"
+                    id="sleepHours"
+                    min="1"
+                    max="12"
+                    value="7"
+                    step="0.5"
+                    oninput="updateSleepVal(this.value)"
+                    class="slider"
+                  />
+                  <span>🌟</span>
+                </div>
+                <div class="scale-val" id="sleepVal">7 hours</div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Sleep Quality</label
+                >
+                <div class="qual-options" id="sleepQual">
+                  <div class="qual-opt" onclick="selectQual(this, 'sleepQual')">
+                    <div class="qual-icon">😫</div>
+                    <div>Very Poor</div>
+                  </div>
+                  <div class="qual-opt" onclick="selectQual(this, 'sleepQual')">
+                    <div class="qual-icon">😕</div>
+                    <div>Poor</div>
+                  </div>
+                  <div
+                    class="qual-opt active"
+                    onclick="selectQual(this, 'sleepQual')"
+                  >
+                    <div class="qual-icon">😐</div>
+                    <div>Fair</div>
+                  </div>
+                  <div class="qual-opt" onclick="selectQual(this, 'sleepQual')">
+                    <div class="qual-icon">😊</div>
+                    <div>Good</div>
+                  </div>
+                  <div class="qual-opt" onclick="selectQual(this, 'sleepQual')">
+                    <div class="qual-icon">🌟</div>
+                    <div>Excellent</div>
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Over the last 2 weeks, how often did sleep problems affect
+                  you: difficulty falling asleep, waking often, waking too
+                  early, or sleeping too much?</label
+                >
+                <div class="mcq-group" id="mq_sleep1">
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_sleep1', 0)"
+                  >
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_sleep1', 1)"
+                  >
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_sleep1', 2)"
+                  >
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_sleep1', 3)"
+                  >
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Sleep Issues (select any that apply)</label
+                >
+                <div class="emotion-chips">
+                  <button class="chip" onclick="toggleChip(this)">
+                    😰 Nightmares
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    🔄 Restless
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    ⏰ Woke early
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    💭 Racing thoughts
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😓 Night sweats
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    ✅ No issues
+                  </button>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >What time did you go to bed?</label
+                >
+                <input
+                  type="time"
+                  class="form-input"
+                  id="bedTime"
+                  value="22:30"
+                />
+              </div>
+              <div class="track-footer">
+                <button class="btn-outline" onclick="goStep(1)">← Back</button>
+                <button class="btn-primary" onclick="goStep(3)">
+                  Next: Activity →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: ACTIVITY -->
+          <div class="track-step hidden" id="step-3">
+            <div class="track-card">
+              <div class="track-card-header">
+                <div class="tch-icon">🏃</div>
+                <div>
+                  <h3>Physical Activity</h3>
+                  <p>
+                    Energy, movement, appetite, and daily routine give useful
+                    mental-health signals.
+                  </p>
+                </div>
+              </div>
+              <div class="track-body">
+                <label class="track-label"
+                  >Exercise / Physical Activity Level</label
+                >
+                <div class="activity-grid">
+                  <div class="act-opt" onclick="selectAct(this)">
+                    <div class="act-icon">🛋️</div>
+                    <div class="act-label">Sedentary</div>
+                    <div class="act-sub">No activity</div>
+                  </div>
+                  <div class="act-opt" onclick="selectAct(this)">
+                    <div class="act-icon">🚶</div>
+                    <div class="act-label">Light</div>
+                    <div class="act-sub">Short walk</div>
+                  </div>
+                  <div class="act-opt active" onclick="selectAct(this)">
+                    <div class="act-icon">🚴</div>
+                    <div class="act-label">Moderate</div>
+                    <div class="act-sub">30 min exercise</div>
+                  </div>
+                  <div class="act-opt" onclick="selectAct(this)">
+                    <div class="act-icon">🏋️</div>
+                    <div class="act-label">Active</div>
+                    <div class="act-sub">60+ min workout</div>
+                  </div>
+                  <div class="act-opt" onclick="selectAct(this)">
+                    <div class="act-icon">⚡</div>
+                    <div class="act-label">Very Active</div>
+                    <div class="act-sub">Intense training</div>
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Over the last 2 weeks, how often did low energy, tiredness,
+                  or body heaviness make daily tasks harder?</label
+                >
+                <div class="mcq-group" id="mq_act1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_act1', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_act1', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_act1', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_act1', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Did you eat regular meals today?</label
+                >
+                <div class="qual-options" id="mealQual">
+                  <div class="qual-opt" onclick="selectQual(this, 'mealQual')">
+                    <div class="qual-icon">❌</div>
+                    <div>Skipped all</div>
+                  </div>
+                  <div class="qual-opt" onclick="selectQual(this, 'mealQual')">
+                    <div class="qual-icon">🍎</div>
+                    <div>Partial</div>
+                  </div>
+                  <div
+                    class="qual-opt active"
+                    onclick="selectQual(this, 'mealQual')"
+                  >
+                    <div class="qual-icon">🥗</div>
+                    <div>Most meals</div>
+                  </div>
+                  <div class="qual-opt" onclick="selectQual(this, 'mealQual')">
+                    <div class="qual-icon">🍽️</div>
+                    <div>All meals</div>
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Approx steps today (optional)</label
+                >
+                <input
+                  type="number"
+                  class="form-input"
+                  id="stepsCount"
+                  placeholder="e.g. 5000"
+                  min="0"
+                  max="50000"
+                />
+              </div>
+              <div class="track-footer">
+                <button class="btn-outline" onclick="goStep(2)">← Back</button>
+                <button class="btn-primary" onclick="goStep(4)">
+                  Next: Social →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: SOCIAL -->
+          <div class="track-step hidden" id="step-4">
+            <div class="track-card">
+              <div class="track-card-header">
+                <div class="tch-icon">💬</div>
+                <div>
+                  <h3>Communication & Social Connection</h3>
+                  <p>
+                    These questions look at isolation, support, conflict, and
+                    ability to communicate.
+                  </p>
+                </div>
+              </div>
+              <div class="track-body">
+                <label class="track-label"
+                  >Social Interaction Level Today</label
+                >
+                <div class="emoji-scale">
+                  <span>🙈</span>
+                  <input
+                    type="range"
+                    id="socialScore"
+                    min="1"
+                    max="10"
+                    value="6"
+                    oninput="updateSocialVal(this.value)"
+                    class="slider"
+                  />
+                  <span>🎉</span>
+                </div>
+                <div class="scale-val" id="socialVal">
+                  6 — Moderate interaction
+                </div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Over the last 2 weeks, how often did you avoid calls,
+                  messages, friends, family, class, or work because you did not
+                  feel emotionally able?</label
+                >
+                <div class="mcq-group" id="mq_soc1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc1', 0)">
+                    <span class="mcq-mark"></span>Not at all — I enjoy social
+                    time
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc1', 1)">
+                    <span class="mcq-mark"></span>A little — I prefer quiet
+                    lately
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc1', 2)">
+                    <span class="mcq-mark"></span>Yes — I've been withdrawing
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc1', 3)">
+                    <span class="mcq-mark"></span>Completely — I want to be
+                    alone
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Right now, how supported and understood do you feel by the
+                  people around you?</label
+                >
+                <div class="mcq-group" id="mq_soc2">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc2', 0)">
+                    <span class="mcq-mark"></span>Strong and supportive
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc2', 1)">
+                    <span class="mcq-mark"></span>Okay, nothing special
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc2', 2)">
+                    <span class="mcq-mark"></span>Strained or distant
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_soc2', 3)">
+                    <span class="mcq-mark"></span>Lonely and disconnected
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >How you're feeling socially (select any)</label
+                >
+                <div class="emotion-chips">
+                  <button class="chip" onclick="toggleChip(this)">
+                    🙂 Connected
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😕 Isolated
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😐 Neutral
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😟 Lonely
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    🥳 Social
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    😤 In conflict
+                  </button>
+                  <button class="chip" onclick="toggleChip(this)">
+                    🤝 Supported
+                  </button>
+                </div>
+              </div>
+              <div class="track-footer">
+                <button class="btn-outline" onclick="goStep(3)">← Back</button>
+                <button class="btn-primary" onclick="goStep(5)">
+                  Next: Psychology →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5: PSYCHOLOGICAL -->
+          <div class="track-step hidden" id="step-5">
+            <div class="track-card">
+              <div class="track-card-header">
+                <div class="tch-icon">🧠</div>
+                <div>
+                  <h3>Psychology Screening</h3>
+                  <p>
+                    At least 7 screening questions help estimate stress,
+                    anxiety, depression, and functioning.
+                  </p>
+                </div>
+              </div>
+              <div class="track-body">
+                <div class="psych-disclaimer">
+                  ⚕️ This is a self-assessment tool, not a clinical diagnosis.
+                  Results help identify patterns and are not a substitute for
+                  professional care.
+                </div>
+
+                <label class="track-label"
+                  >Over the last 2 weeks, how often did you feel nervous,
+                  anxious, tense, or on edge?</label
+                >
+                <div class="mcq-group" id="mq_anx1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx1', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx1', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx1', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx1', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Over the last 2 weeks, how often were you unable to stop or
+                  control worrying once it started?</label
+                >
+                <div class="mcq-group" id="mq_anx2">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx2', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx2', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx2', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_anx2', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Over the last 2 weeks, how often did concentration problems
+                  affect studying, work, reading, or conversations?</label
+                >
+                <div class="mcq-group" id="mq_conc1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_conc1', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_conc1', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_conc1', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_conc1', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Over the last 2 weeks, how often did you strongly criticize
+                  yourself, feel like a failure, or feel you disappointed
+                  others?</label
+                >
+                <div class="mcq-group" id="mq_self1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_self1', 0)">
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_self1', 1)">
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_self1', 2)">
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_self1', 3)">
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Over the last 2 weeks, how often did others notice you moving
+                  or speaking much slower than usual, or being unusually
+                  restless?</label
+                >
+                <div class="mcq-group" id="mq_psych1">
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_psych1', 0)"
+                  >
+                    <span class="mcq-mark"></span>Not at all
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_psych1', 1)"
+                  >
+                    <span class="mcq-mark"></span>Several days
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_psych1', 2)"
+                  >
+                    <span class="mcq-mark"></span>More than half the days
+                  </div>
+                  <div
+                    class="mcq-opt"
+                    onclick="selectMCQ(this, 'mq_psych1', 3)"
+                  >
+                    <span class="mcq-mark"></span>Nearly every day
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Overall, how much did these problems interfere with study,
+                  work, home responsibilities, or relationships?</label
+                >
+                <div class="mcq-group" id="mq_diff1">
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_diff1', 0)">
+                    <span class="mcq-mark"></span>Not difficult at all
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_diff1', 1)">
+                    <span class="mcq-mark"></span>Somewhat difficult
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_diff1', 2)">
+                    <span class="mcq-mark"></span>Very difficult
+                  </div>
+                  <div class="mcq-opt" onclick="selectMCQ(this, 'mq_diff1', 3)">
+                    <span class="mcq-mark"></span>Extremely difficult
+                  </div>
+                </div>
+
+                <label class="track-label" style="margin-top: 1rem"
+                  >Your stress level right now (1=very calm, 10=extremely
+                  stressed)</label
+                >
+                <div class="emoji-scale">
+                  <span>😌</span>
+                  <input
+                    type="range"
+                    id="stressScore"
+                    min="1"
+                    max="10"
+                    value="4"
+                    oninput="updateStressVal(this.value)"
+                    class="slider"
+                  />
+                  <span>😤</span>
+                </div>
+                <div class="scale-val" id="stressVal">
+                  4 — Manageable stress
+                </div>
+
+                <label class="track-label" style="margin-top: 1.5rem"
+                  >Any additional thoughts you'd like to share?</label
+                >
+                <textarea
+                  class="form-input"
+                  id="generalNotes"
+                  rows="3"
+                  placeholder="Anything on your mind — completely private and stays on this device..."
+                ></textarea>
+              </div>
+              <div class="track-footer">
+                <button class="btn-outline" onclick="goStep(4)">← Back</button>
+                <button class="btn-primary" onclick="submitLog()">
+                  Submit Check-In ✓
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: REPORTS ===== -->
+      <div id="page-reports" class="page">
+        <div class="page-container">
+          <div class="page-header">
+            <div>
+              <h1>Reports & Analytics 📊</h1>
+              <p class="page-sub">Comprehensive wellbeing analysis</p>
+            </div>
+            <div class="header-actions">
+              <select
+                class="form-input"
+                id="reportPeriod"
+                onchange="updateReports()"
+                style="width: auto"
+              >
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+                <option>This Month</option>
               </select>
+              <button class="btn-primary" onclick="exportReport()">
+                Download PDF
+              </button>
             </div>
-            <button class="btn-primary" onclick="saveProfile()">Save Contact</button>
           </div>
-          <div class="dash-card">
-            <div class="card-header"><h3>My Wellbeing History</h3></div>
-            <canvas id="myHistoryChart"></canvas>
+
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              id="studentSearch"
+              placeholder="Search by name or ID..."
+              class="search-input"
+              oninput="filterStudents()"
+            />
+          </div>
+
+          <div class="reports-grid">
+            <div class="dash-card wide">
+              <div class="card-header"><h3>🚨 Active Behaviour Alerts</h3></div>
+              <div class="alerts-table" id="alertsTable"></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header">
+                <h3>🔐 Recent Logins</h3>
+                <button class="card-btn" onclick="refreshLoginList()">
+                  Refresh
+                </button>
+              </div>
+              <div
+                class="login-list"
+                id="loginList"
+                style="max-height: 240px; overflow: auto; padding: 0.5rem"
+              ></div>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header"><h3>Problem Trend Over Time</h3></div>
+              <canvas id="changeChart"></canvas>
+            </div>
+
+            <div class="dash-card">
+              <div class="card-header"><h3>Risk Meaning</h3></div>
+              <canvas id="riskChart"></canvas>
+            </div>
+
+            <div class="dash-card wide">
+              <div class="card-header"><h3>👥 Student Profiles</h3></div>
+              <div class="student-grid" id="studentGrid"></div>
+            </div>
+          </div>
+
+          <div class="modal-overlay" id="studentModal" onclick="closeModal()">
+            <div class="modal" onclick="event.stopPropagation()">
+              <button class="modal-close" onclick="closeModal()">✕</button>
+              <div id="modalContent"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: AI CHAT ===== -->
+      <div id="page-ai-chat" class="page">
+        <div class="chat-layout">
+          <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+              <h3>🤖 AI Assistant</h3>
+              <button class="btn-outline btn-sm" onclick="newChat()">
+                + New
+              </button>
+            </div>
+            <div class="chat-suggestions">
+              <p>Suggested questions:</p>
+              <button class="sugg-btn" onclick="askSuggestion(this)">
+                What does my mental health score mean?
+              </button>
+              <button class="sugg-btn" onclick="askSuggestion(this)">
+                How can I improve my sleep?
+              </button>
+              <button class="sugg-btn" onclick="askSuggestion(this)">
+                Tips for managing anxiety today
+              </button>
+              <button class="sugg-btn" onclick="askSuggestion(this)">
+                Explain the mood-sleep connection
+              </button>
+              <button class="sugg-btn" onclick="askSuggestion(this)">
+                I'm feeling overwhelmed, help me
+              </button>
+            </div>
+            <div class="web-search-toggle">
+              <label class="toggle-row">
+                <span>🌐 Web Search</span>
+                <input
+                  type="checkbox"
+                  id="webSearchToggle"
+                  onchange="toggleWebSearch(this)"
+                />
+                <div class="toggle-switch"></div>
+              </label>
+              <p class="toggle-desc">
+                Enable to search latest mental health research
+              </p>
+            </div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-messages" id="chatMessages">
+              <div class="msg ai">
+                <div class="msg-avatar">🤖</div>
+                <div class="msg-bubble">
+                  <p>
+                    Hello! I'm your MindGuard AI wellness assistant. I can help
+                    you:
+                  </p>
+                  <ul>
+                    <li>Understand your mental health scores and patterns</li>
+                    <li>
+                      Provide coping strategies for anxiety, stress, or low mood
+                    </li>
+                    <li>
+                      Answer questions about sleep, mood, and psychological
+                      wellbeing
+                    </li>
+                    <li>Search the latest mental health research</li>
+                  </ul>
+                  <p>What's on your mind today?</p>
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-area">
+              <div class="chat-input-wrap">
+                <textarea
+                  id="chatInput"
+                  placeholder="Ask anything about your mental health or wellbeing..."
+                  rows="1"
+                  onkeydown="handleChatKey(event)"
+                  oninput="autoResize(this)"
+                ></textarea>
+                <button class="send-btn" onclick="sendChat()">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+              <p class="chat-hint">
+                AI powered by Claude · Press Enter to send · Shift+Enter for new
+                line
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: WELLNESS HUB ===== -->
+      <div id="page-wellness" class="page">
+        <div class="page-container">
+          <div class="page-header">
+            <div>
+              <h1>Wellness Hub 💚</h1>
+              <p class="page-sub">
+                Personalized tips, resources and crisis support
+              </p>
+            </div>
+          </div>
+
+          <div id="wellnessContent">
+            <!-- Filled by JS based on user's score -->
+          </div>
+
+          <div class="wellness-grid">
+            <div class="wellness-card">
+              <div class="wc-icon">🧘</div>
+              <h3>Mindfulness</h3>
+              <p>
+                5-minute guided exercises to calm your mind and reduce anxiety.
+              </p>
+              <div class="wc-tips" id="wcTipsMindful"></div>
+            </div>
+            <div class="wellness-card">
+              <div class="wc-icon">💤</div>
+              <h3>Better Sleep</h3>
+              <p>
+                Evidence-based sleep hygiene tips to improve quality and
+                duration.
+              </p>
+              <div class="wc-tips" id="wcTipsSleep"></div>
+            </div>
+            <div class="wellness-card">
+              <div class="wc-icon">🏃</div>
+              <h3>Move Your Body</h3>
+              <p>
+                Physical activity is medicine for your mind — here's how to
+                start.
+              </p>
+              <div class="wc-tips" id="wcTipsActivity"></div>
+            </div>
+            <div class="wellness-card">
+              <div class="wc-icon">🤝</div>
+              <h3>Stay Connected</h3>
+              <p>
+                Strategies to rebuild social connections when you're feeling
+                isolated.
+              </p>
+              <div class="wc-tips" id="wcTipsSocial"></div>
+            </div>
+          </div>
+
+          <div class="crisis-banner">
+            <div class="crisis-icon">🆘</div>
+            <div class="crisis-content">
+              <h3>Crisis Support</h3>
+              <p>
+                If you or someone you know is in immediate danger or
+                experiencing a mental health crisis:
+              </p>
+              <div class="crisis-links">
+                <a href="tel:iCall" class="crisis-btn">📞 iCall: 9152987821</a>
+                <a href="tel:Vandrevala" class="crisis-btn"
+                  >📞 Vandrevala Foundation: 1860-2662-345</a
+                >
+                <a href="tel:112" class="crisis-btn emergency"
+                  >🚨 Emergency: 112</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE: PROFILE ===== -->
+      <div id="page-profile" class="page">
+        <div class="page-container">
+          <div class="page-header">
+            <h1>My Profile 👤</h1>
+          </div>
+          <div class="profile-layout">
+            <div class="profile-card">
+              <div class="profile-avatar-big">
+                <div class="profile-avatar-initials" id="profileAvatarInitials">
+                  JD
+                </div>
+              </div>
+              <h2 id="profileName">Your Name</h2>
+              <p id="profileRole" class="profile-role">
+                Individual · MindGuard User
+              </p>
+              <div class="profile-stats">
+                <div>
+                  <strong id="pDaysLogged">0</strong><span>Days Logged</span>
+                </div>
+                <div>
+                  <strong id="pStreak">0</strong><span>Day Streak 🔥</span>
+                </div>
+                <div>
+                  <strong id="pHealthScore">—</strong><span>Health Score</span>
+                </div>
+              </div>
+            </div>
+            <div class="profile-details">
+              <div class="dash-card">
+                <div class="card-header">
+                  <h3>Personal Info</h3>
+                  <button class="card-btn" onclick="saveProfile()">
+                    Save Changes
+                  </button>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>First Name</label
+                    ><input type="text" class="form-input" id="pfFirst" />
+                  </div>
+                  <div class="form-group">
+                    <label>Last Name</label
+                    ><input type="text" class="form-input" id="pfLast" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email</label
+                  ><input
+                    type="email"
+                    class="form-input"
+                    id="pfEmail"
+                    readonly
+                    style="background: var(--bg)"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Password (new)</label>
+                  <div class="input-wrap">
+                    <input
+                      type="password"
+                      class="form-input"
+                      id="pfPass"
+                      placeholder="Leave blank to keep current"
+                    /><button
+                      class="toggle-pass"
+                      onclick="togglePass('pfPass')"
+                      type="button"
+                    >
+                      👁
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="dash-card">
+                <div class="card-header"><h3>🔔 Emergency Contact</h3></div>
+                <p
+                  style="
+                    font-size: 0.85rem;
+                    color: var(--text-2);
+                    margin-bottom: 1rem;
+                  "
+                >
+                  This person will be notified if mental health concerns are
+                  detected. Stored only on this device.
+                </p>
+                <div class="form-group">
+                  <label>Contact Name</label
+                  ><input type="text" class="form-input" id="pfEcName" />
+                </div>
+                <div class="form-group">
+                  <label>Contact Email</label
+                  ><input type="email" class="form-input" id="pfEcEmail" />
+                </div>
+                <div class="form-group">
+                  <label>Relationship</label>
+                  <select class="form-input" id="pfEcRelation">
+                    <option>Parent/Guardian</option>
+                    <option>Counselor</option>
+                    <option>Teacher</option>
+                    <option>Sibling</option>
+                    <option>Friend</option>
+                    <option>Doctor</option>
+                  </select>
+                </div>
+                <button class="btn-primary" onclick="saveProfile()">
+                  Save Contact
+                </button>
+              </div>
+              <div class="dash-card">
+                <div class="card-header"><h3>My Wellbeing History</h3></div>
+                <canvas id="myHistoryChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== RESULT MODAL ===== -->
+      <div class="modal-overlay" id="resultModal" onclick="closeResultModal()">
+        <div class="modal result-modal" onclick="event.stopPropagation()">
+          <button class="modal-close" onclick="closeResultModal()">✕</button>
+          <div id="resultModalContent"></div>
+        </div>
+      </div>
+
+      <!-- TOAST -->
+      <div class="toast" id="toast"></div>
+      <div class="alert-modal" id="alertModal" style="display: none">
+        <div class="alert-modal-content">
+          <div class="alert-modal-icon">⚠️</div>
+          <h3 id="alertModalTitle">Concern Detected</h3>
+          <p id="alertModalBody"></p>
+          <div class="alert-modal-actions">
+            <button class="btn-primary" onclick="closeAlertModal()">
+              Got It
+            </button>
+            <button
+              class="btn-outline"
+              onclick="
+                showPage('wellness');
+                closeAlertModal();
+              "
+            >
+              View Tips
+            </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ===== RESULT MODAL ===== -->
-  <div class="modal-overlay" id="resultModal" onclick="closeResultModal()">
-    <div class="modal result-modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeResultModal()">✕</button>
-      <div id="resultModalContent"></div>
-    </div>
-  </div>
-
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
-  <div class="alert-modal" id="alertModal" style="display:none">
-    <div class="alert-modal-content">
-      <div class="alert-modal-icon">⚠️</div>
-      <h3 id="alertModalTitle">Concern Detected</h3>
-      <p id="alertModalBody"></p>
-      <div class="alert-modal-actions">
-        <button class="btn-primary" onclick="closeAlertModal()">Got It</button>
-        <button class="btn-outline" onclick="showPage('wellness');closeAlertModal()">View Tips</button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="app.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

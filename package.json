@@ -19,7 +19,14 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["education", "behaviour", "student", "alert", "ai", "wellbeing"],
+  "keywords": [
+    "education",
+    "behaviour",
+    "student",
+    "alert",
+    "ai",
+    "wellbeing"
+  ],
   "author": "BehaviourSense Team",
   "license": "MIT"
 }
