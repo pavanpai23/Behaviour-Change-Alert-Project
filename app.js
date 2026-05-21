@@ -1,9 +1,11 @@
-/* MindGuard - production localStorage mental health monitoring system */
+/* MindGuard - shared-server mental health monitoring system with local cache fallback */
 
 const ADMIN_EMAIL = 'admin@mindguard.app';
 const ADMIN_PASSWORD = 'Admin@1234!';
 const DB_KEY = 'mindguard_db_v2';
 const SESSION_KEY = 'mindguard_session_v2';
+const API_DB_URL = '/api/db';
+const ADMIN_REFRESH_MS = 5000;
 
 const state = {
   currentUser: null,
@@ -14,14 +16,26 @@ const state = {
   currentStepData: {},
   chatHistory: [],
   webSearchEnabled: false,
-  selectedAdminUserId: null
+  selectedAdminUserId: null,
+  remoteDb: null,
+  serverOnline: false,
+  adminRefreshTimer: null
 };
 
 let currentStep = 1;
 let trendChartInst, donutChartInst, changeChartInst, riskChartInst, histChartInst;
 let adminMoodChart, adminStressChart, adminSleepChart, adminRiskChart;
 
+function normalizeDb(next = {}) {
+  return {
+    users: Array.isArray(next.users) ? next.users : [],
+    checkins: Array.isArray(next.checkins) ? next.checkins : [],
+    alerts: Array.isArray(next.alerts) ? next.alerts : []
+  };
+}
+
 function db() {
+  if (state.remoteDb) return normalizeDb(state.remoteDb);
   const base = { users: [], checkins: [], alerts: [] };
   try {
     const parsed = JSON.parse(localStorage.getItem(DB_KEY) || 'null');
@@ -32,11 +46,72 @@ function db() {
 }
 
 function saveDb(next) {
-  localStorage.setItem(DB_KEY, JSON.stringify({
-    users: next.users || [],
-    checkins: next.checkins || [],
-    alerts: next.alerts || []
-  }));
+  const clean = normalizeDb(next);
+  state.remoteDb = clean;
+  localStorage.setItem(DB_KEY, JSON.stringify(clean));
+  return syncDbToServer(clean);
+}
+
+async function loadSharedDb({ silent = false } = {}) {
+  try {
+    const res = await fetch(API_DB_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    state.remoteDb = normalizeDb(await res.json());
+    state.serverOnline = true;
+    localStorage.setItem(DB_KEY, JSON.stringify(state.remoteDb));
+    return true;
+  } catch (err) {
+    state.serverOnline = false;
+    if (!silent) showToast('Shared server unavailable. Using this device cache.');
+    return false;
+  }
+}
+
+async function syncDbToServer(next, { replace = false } = {}) {
+  try {
+    const res = await fetch(`${API_DB_URL}${replace ? '?mode=replace' : ''}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(normalizeDb(next))
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.db) {
+      state.remoteDb = normalizeDb(data.db);
+      localStorage.setItem(DB_KEY, JSON.stringify(state.remoteDb));
+    }
+    state.serverOnline = true;
+    return true;
+  } catch {
+    state.serverOnline = false;
+    showToast('Saved on this device. Start the server to sync across phones/laptops.');
+    return false;
+  }
+}
+
+async function refreshAdminData({ rerender = true } = {}) {
+  if (!state.currentUser || state.currentUser.role !== 'admin') return;
+  const before = JSON.stringify(state.remoteDb || db());
+  const ok = await loadSharedDb({ silent: true });
+  if (!ok || !rerender) return;
+  const changed = before !== JSON.stringify(state.remoteDb);
+  if (changed && state.currentPage === 'reports') renderAdminReports();
+  if (changed && state.currentPage === 'dashboard') initAdminDashboard();
+  if (changed && document.getElementById('studentModal')?.classList.contains('open') && state.selectedAdminUserId) {
+    openStudentModal(state.selectedAdminUserId);
+  }
+}
+
+function startAdminRefresh() {
+  stopAdminRefresh();
+  if (state.currentUser?.role === 'admin') {
+    state.adminRefreshTimer = setInterval(() => refreshAdminData(), ADMIN_REFRESH_MS);
+  }
+}
+
+function stopAdminRefresh() {
+  if (state.adminRefreshTimer) clearInterval(state.adminRefreshTimer);
+  state.adminRefreshTimer = null;
 }
 
 function saveSession(user) {
@@ -163,7 +238,8 @@ function setRole(role, btn) {
   if (nameGroup) nameGroup.style.display = state.currentRole === 'admin' ? 'none' : 'block';
 }
 
-function login() {
+async function login() {
+  await loadSharedDb({ silent: true });
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   if (!validEmail(email) || !pass) return showToast('Please enter a valid email and password.');
@@ -174,7 +250,9 @@ function login() {
     state.logs = [];
     saveSession(state.currentUser);
     updateNavUser();
+    startAdminRefresh();
     showToast('Admin signed in.');
+    await refreshAdminData({ rerender: false });
     return showPage('reports');
   }
 
@@ -185,11 +263,13 @@ function login() {
   state.logs = userCheckins(user.id).reverse();
   saveSession(state.currentUser);
   updateNavUser();
+  stopAdminRefresh();
   showToast(`Welcome back, ${user.name.split(' ')[0]}.`);
   showPage('dashboard');
 }
 
-function register() {
+async function register() {
+  await loadSharedDb({ silent: true });
   const first = document.getElementById('regFirst').value.trim();
   const last = document.getElementById('regLast').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
@@ -216,11 +296,12 @@ function register() {
     updatedAt: new Date().toISOString()
   };
   data.users.push(user);
-  saveDb(data);
+  await saveDb(data);
   state.currentUser = publicUser(user);
   state.logs = [];
   saveSession(state.currentUser);
   updateNavUser();
+  stopAdminRefresh();
   showToast('Account created.');
   showPage('dashboard');
 }
@@ -240,6 +321,7 @@ function demoLogin() {
 }
 
 function logout() {
+  stopAdminRefresh();
   localStorage.removeItem(SESSION_KEY);
   state.currentUser = null;
   state.logs = [];
@@ -251,7 +333,8 @@ function logout() {
   showToast('Signed out.');
 }
 
-function restoreSession() {
+async function restoreSession() {
+  await loadSharedDb({ silent: true });
   try {
     const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
     if (!session) return false;
@@ -275,6 +358,8 @@ function restoreSession() {
     }
     if (!state.currentUser) return false;
     updateNavUser();
+    if (state.currentUser.role === 'admin') startAdminRefresh();
+    else stopAdminRefresh();
     return true;
   } catch {}
   return false;
@@ -607,7 +692,8 @@ function filterStudents() {
   renderStudentGrid(adminRows().filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)), document.getElementById('studentGrid'));
 }
 
-function updateReports() {
+async function updateReports() {
+  if (state.currentUser?.role === 'admin') await refreshAdminData({ rerender: false });
   initReports();
 }
 
@@ -629,7 +715,8 @@ function closeModal() {
   document.getElementById('studentModal')?.classList.remove('open');
 }
 
-function sendAlert(userId) {
+async function sendAlert(userId) {
+  await loadSharedDb({ silent: true });
   const data = db();
   const user = data.users.find(u => u.id === userId);
   if (!user) return;
@@ -644,19 +731,30 @@ function sendAlert(userId) {
     timestamp: new Date().toISOString(),
     sentBy: ADMIN_EMAIL
   });
-  saveDb(data);
+  await saveDb(data);
   showToast('Alert saved with timestamp.');
   openStudentModal(userId);
 }
 
-function deleteUser(userId) {
+async function deleteUser(userId) {
   if (!confirm('Delete this user and all related check-ins/alerts?')) return;
   const data = db();
-  saveDb({
+  const next = {
     users: data.users.filter(u => u.id !== userId),
     checkins: data.checkins.filter(c => c.userId !== userId),
     alerts: data.alerts.filter(a => a.userId !== userId)
-  });
+  };
+  state.remoteDb = next;
+  localStorage.setItem(DB_KEY, JSON.stringify(next));
+  try {
+    const res = await fetch(`/api/users/${encodeURIComponent(userId)}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const result = await res.json();
+    if (result.db) state.remoteDb = normalizeDb(result.db);
+    state.serverOnline = true;
+  } catch {
+    await syncDbToServer(next, { replace: true });
+  }
   closeModal();
   initReports();
   showToast('User deleted.');
@@ -761,8 +859,9 @@ function getResultLabel(score) {
   return { emoji: 'OK', label: 'Low Risk', color: '#10b981' };
 }
 
-function submitLog() {
+async function submitLog() {
   if (!state.currentUser || state.currentUser.role !== 'user') return showToast('Please sign in as a user.');
+  await loadSharedDb({ silent: true });
   const s = calculateHealthScore();
   const risk = getRiskLevel(s.total);
   const checkin = {
@@ -795,8 +894,9 @@ function submitLog() {
   if (risk !== 'LOW') {
     data.alerts.push({ id: uid('alert'), userId: state.currentUser.id, userName: state.currentUser.name, title: `${risk} Risk Check-in`, message: `${state.currentUser.name} submitted a ${risk} risk check-in.`, risk, timestamp: new Date().toISOString(), sentBy: 'system' });
   }
-  saveDb(data);
+  await saveDb(data);
   state.logs = userCheckins(state.currentUser.id).reverse();
+  showToast(state.serverOnline ? 'Check-in saved and shared with admin.' : 'Check-in saved on this device.');
   showResultModal(s, risk, checkin);
   if (risk === 'HIGH') setTimeout(() => showAlertModal('High Risk Detected', 'Your latest check-in indicates high risk. Consider contacting your emergency support person or a qualified professional.'), 800);
 }
@@ -883,8 +983,9 @@ function calcStreak(entries) {
   return streak;
 }
 
-function saveProfile() {
+async function saveProfile() {
   if (state.currentUser.role !== 'user') return;
+  await loadSharedDb({ silent: true });
   const data = db();
   const user = data.users.find(u => u.id === state.currentUser.id);
   if (!user) return;
@@ -897,7 +998,7 @@ function saveProfile() {
   user.emergencyContact = { name: document.getElementById('pfEcName').value.trim(), email: document.getElementById('pfEcEmail').value.trim(), relation: document.getElementById('pfEcRelation').value };
   if (newPass) user.password = hashPassword(newPass);
   user.updatedAt = new Date().toISOString();
-  saveDb(data);
+  await saveDb(data);
   state.currentUser = publicUser(user);
   updateNavUser();
   initProfile();
@@ -1010,9 +1111,12 @@ function sendChat() {
 
 function formatAIResponse(text) { return escapeHtml(text).replace(/\n/g, '<br>'); }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const restored = restoreSession();
+document.addEventListener('DOMContentLoaded', async () => {
+  const restored = await restoreSession();
   if (restored) showPage(state.currentUser.role === 'admin' ? 'reports' : 'dashboard');
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refreshAdminData();
+  });
   document.addEventListener('click', e => {
     if (!e.target.closest('.user-avatar-wrap')) {
       const dd = document.getElementById('userDropdown');

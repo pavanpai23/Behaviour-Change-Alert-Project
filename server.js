@@ -18,7 +18,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname)));
 
 // ===== IN-MEMORY DATA STORE =====
-// No demo users are preloaded. The browser app uses localStorage by default.
+// No demo users are preloaded. Browser clients share this JSON-backed store.
 let db = {
   users: [],
   checkins: [],
@@ -34,6 +34,60 @@ if (fs.existsSync(dataFile)) {
 function saveDb() {
   fs.writeFileSync(dataFile, JSON.stringify(db, null, 2));
 }
+
+function publicDb() {
+  return {
+    users: db.users,
+    checkins: db.checkins,
+    alerts: db.alerts
+  };
+}
+
+function upsertById(current, incoming) {
+  const map = new Map(current.map(item => [item.id, item]));
+  incoming.forEach(item => {
+    if (item && item.id) map.set(item.id, { ...(map.get(item.id) || {}), ...item });
+  });
+  return Array.from(map.values());
+}
+
+function replaceDb(next = {}) {
+  db = {
+    users: Array.isArray(next.users) ? next.users : [],
+    checkins: Array.isArray(next.checkins) ? next.checkins : [],
+    alerts: Array.isArray(next.alerts) ? next.alerts : []
+  };
+  saveDb();
+}
+
+function mergeDb(next = {}) {
+  db = {
+    users: upsertById(db.users, Array.isArray(next.users) ? next.users : []),
+    checkins: upsertById(db.checkins, Array.isArray(next.checkins) ? next.checkins : []),
+    alerts: upsertById(db.alerts, Array.isArray(next.alerts) ? next.alerts : [])
+  };
+  saveDb();
+}
+
+// ===== SHARED DATA ROUTES =====
+app.get('/api/db', (req, res) => {
+  res.json(publicDb());
+});
+
+app.put('/api/db', (req, res) => {
+  if (req.query.mode === 'replace') replaceDb(req.body);
+  else mergeDb(req.body);
+  res.json({ success: true, db: publicDb() });
+});
+
+app.delete('/api/users/:id', (req, res) => {
+  const { id } = req.params;
+  db.users = db.users.filter(u => u.id !== id);
+  db.checkins = db.checkins.filter(c => c.userId !== id);
+  db.alerts = db.alerts.filter(a => a.userId !== id);
+  saveDb();
+  res.json({ success: true, db: publicDb() });
+});
 
 // ===== AUTH ROUTES =====
 app.post('/api/auth/login', (req, res) => {
