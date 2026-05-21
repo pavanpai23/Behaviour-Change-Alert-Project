@@ -18,7 +18,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname)));
 
 // ===== IN-MEMORY DATA STORE =====
-// No demo users are preloaded. Browser clients share this JSON-backed store.
 let db = {
   users: [],
   checkins: [],
@@ -69,6 +68,47 @@ function mergeDb(next = {}) {
   saveDb();
 }
 
+// ===== SSE: REAL-TIME PUSH TO ALL CONNECTED CLIENTS =====
+// Keeps a set of active SSE response objects (one per open browser tab/device)
+const sseClients = new Set();
+
+/**
+ * Push the latest DB to every connected client immediately.
+ * Called after any write so admin on phone AND laptop both update without polling.
+ */
+function broadcastDb() {
+  const payload = `data: ${JSON.stringify(publicDb())}\n\n`;
+  for (const res of sseClients) {
+    try { res.write(payload); } catch (_) { sseClients.delete(res); }
+  }
+}
+
+// Client connects here to receive push updates
+app.get('/api/events', (req, res) => {
+  res.set({
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'X-Accel-Buffering': 'no'   // disable Nginx buffering if behind a proxy
+  });
+  res.flushHeaders();
+
+  // Send current state immediately on connect
+  res.write(`data: ${JSON.stringify(publicDb())}\n\n`);
+
+  // Keep connection alive with a heartbeat every 20 s
+  const heartbeat = setInterval(() => {
+    try { res.write(': heartbeat\n\n'); } catch (_) {}
+  }, 20000);
+
+  sseClients.add(res);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    sseClients.delete(res);
+  });
+});
+
 // ===== SHARED DATA ROUTES =====
 app.get('/api/db', (req, res) => {
   res.json(publicDb());
@@ -77,6 +117,7 @@ app.get('/api/db', (req, res) => {
 app.put('/api/db', (req, res) => {
   if (req.query.mode === 'replace') replaceDb(req.body);
   else mergeDb(req.body);
+  broadcastDb();   // ← push update to ALL devices instantly
   res.json({ success: true, db: publicDb() });
 });
 
@@ -86,6 +127,7 @@ app.delete('/api/users/:id', (req, res) => {
   db.checkins = db.checkins.filter(c => c.userId !== id);
   db.alerts = db.alerts.filter(a => a.userId !== id);
   saveDb();
+  broadcastDb();   // ← push update to ALL devices instantly
   res.json({ success: true, db: publicDb() });
 });
 
@@ -109,6 +151,7 @@ app.post('/api/auth/register', (req, res) => {
   const user = { id: 'u' + Date.now(), email, password, name: `${firstName} ${lastName}`, role: 'user', emergencyContact, createdAt: new Date().toISOString() };
   db.users.push(user);
   saveDb();
+  broadcastDb();   // ← push new user to admin on every device immediately
   const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
   res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, emergencyContact: user.emergencyContact } });
 });
@@ -126,6 +169,7 @@ app.post('/api/checkins', (req, res) => {
   alerts.forEach(a => db.alerts.push({ ...a, userId: log.userId, checkinId: log.id, timestamp: new Date().toISOString() }));
   
   saveDb();
+  broadcastDb();   // ← push new check-in to admin on every device immediately
   res.json({ success: true, log, alertsGenerated: alerts.length });
 });
 
@@ -181,7 +225,7 @@ app.post('/api/ai/chat', async (req, res) => {
 
 // ===== HEALTH CHECK =====
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0' });
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), version: '1.0.0', connectedClients: sseClients.size });
 });
 
 // ===== SERVE FRONTEND =====
@@ -193,6 +237,8 @@ app.listen(PORT, () => {
   console.log(`\nMindGuard Server running at http://localhost:${PORT}`);
   console.log(`Dashboard: http://localhost:${PORT}`);
   console.log(`API: http://localhost:${PORT}/api/health\n`);
+  console.log(`Real-time SSE: http://localhost:${PORT}/api/events`);
+  console.log(`Open on multiple devices/tabs — admin updates instantly!\n`);
 });
 
 module.exports = app;

@@ -5,7 +5,8 @@ const ADMIN_PASSWORD = 'Admin@1234!';
 const DB_KEY = 'mindguard_db_v2';
 const SESSION_KEY = 'mindguard_session_v2';
 const API_DB_URL = '/api/db';
-const ADMIN_REFRESH_MS = 5000;
+const API_EVENTS_URL = '/api/events';   // SSE endpoint for real-time push
+const ADMIN_REFRESH_MS = 10000;         // Fallback poll every 10 s (SSE is primary)
 
 const state = {
   currentUser: null,
@@ -19,7 +20,8 @@ const state = {
   selectedAdminUserId: null,
   remoteDb: null,
   serverOnline: false,
-  adminRefreshTimer: null
+  adminRefreshTimer: null,
+  sseSource: null          // ← holds the active EventSource connection
 };
 
 let currentStep = 1;
@@ -104,12 +106,49 @@ async function refreshAdminData({ rerender = true } = {}) {
 
 function startAdminRefresh() {
   stopAdminRefresh();
-  if (state.currentUser?.role === 'admin') {
-    state.adminRefreshTimer = setInterval(() => refreshAdminData(), ADMIN_REFRESH_MS);
+  if (state.currentUser?.role !== 'admin') return;
+
+  // ── PRIMARY: SSE real-time push ──────────────────────────────────────────
+  // Opens a persistent HTTP connection; server pushes DB whenever any client
+  // writes data (register, check-in, profile save, send alert, delete user).
+  // This means admin on laptop AND phone both update the moment a user on the
+  // other device submits anything — no button press needed.
+  if (typeof EventSource !== 'undefined') {
+    const es = new EventSource(API_EVENTS_URL);
+    es.onopen = () => { state.serverOnline = true; };
+    es.onmessage = (ev) => {
+      try {
+        const fresh = JSON.parse(ev.data);
+        const before = JSON.stringify(state.remoteDb);
+        state.remoteDb = fresh;
+        localStorage.setItem(DB_KEY, JSON.stringify(fresh));
+        state.serverOnline = true;
+        // Re-render only if data actually changed
+        if (JSON.stringify(fresh) !== before) {
+          if (state.currentPage === 'reports') renderAdminReports();
+          if (state.currentPage === 'dashboard') initAdminDashboard();
+          if (document.getElementById('studentModal')?.classList.contains('open') && state.selectedAdminUserId) {
+            openStudentModal(state.selectedAdminUserId);
+          }
+        }
+      } catch (_) {}
+    };
+    es.onerror = () => { state.serverOnline = false; };
+    state.sseSource = es;
   }
+
+  // ── FALLBACK: polling every 10 s if SSE is unavailable ───────────────────
+  state.adminRefreshTimer = setInterval(() => {
+    if (!state.sseSource || state.sseSource.readyState === EventSource.CLOSED) {
+      refreshAdminData();
+    }
+  }, ADMIN_REFRESH_MS);
 }
 
 function stopAdminRefresh() {
+  // Close SSE connection
+  if (state.sseSource) { state.sseSource.close(); state.sseSource = null; }
+  // Clear fallback poll timer
   if (state.adminRefreshTimer) clearInterval(state.adminRefreshTimer);
   state.adminRefreshTimer = null;
 }
@@ -1114,9 +1153,20 @@ function formatAIResponse(text) { return escapeHtml(text).replace(/\n/g, '<br>')
 document.addEventListener('DOMContentLoaded', async () => {
   const restored = await restoreSession();
   if (restored) showPage(state.currentUser.role === 'admin' ? 'reports' : 'dashboard');
+
+  // Re-connect SSE whenever the tab becomes visible (handles sleep/resume)
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) refreshAdminData();
+    if (!document.hidden) {
+      if (state.currentUser?.role === 'admin') {
+        // Ensure SSE is alive; reconnect if it dropped
+        if (!state.sseSource || state.sseSource.readyState === EventSource.CLOSED) {
+          startAdminRefresh();
+        }
+        refreshAdminData();
+      }
+    }
   });
+
   document.addEventListener('click', e => {
     if (!e.target.closest('.user-avatar-wrap')) {
       const dd = document.getElementById('userDropdown');
