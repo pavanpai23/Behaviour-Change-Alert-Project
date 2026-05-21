@@ -1,5 +1,5 @@
 /**
- * BehaviourSense - Backend Server
+ * MindGuard - optional static server/API shell
  * Node.js + Express
  * Run: node server.js
  */
@@ -18,14 +18,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname)));
 
 // ===== IN-MEMORY DATA STORE =====
-// In production, replace with a real database (PostgreSQL, MongoDB, etc.)
+// No demo users are preloaded. The browser app uses localStorage by default.
 let db = {
-  users: [
-    { id: 'u1', email: 'teacher@school.edu', password: 'demo123', name: 'Ms. Priya Nair', role: 'teacher', school: 'Greenwood High' },
-    { id: 'u2', email: 'student@school.edu', password: 'demo123', name: 'Rohan Mehta', role: 'student', school: 'Greenwood High' },
-    { id: 'u3', email: 'admin@school.edu', password: 'demo123', name: 'Dr. Admin', role: 'admin', school: 'Greenwood High' }
-  ],
-  logs: [],
+  users: [],
+  checkins: [],
   alerts: []
 };
 
@@ -42,6 +38,10 @@ function saveDb() {
 // ===== AUTH ROUTES =====
 app.post('/api/auth/login', (req, res) => {
   const { email, password, role } = req.body;
+  if (email === 'admin@mindguard.app' && password === 'Admin@1234!') {
+    const token = Buffer.from(`admin:${Date.now()}`).toString('base64');
+    return res.json({ token, user: { id: 'admin', name: 'MindGuard Admin', email, role: 'admin' } });
+  }
   const user = db.users.find(u => u.email === email && u.password === password);
   if (!user) return res.status(401).json({ error: 'Invalid credentials' });
   const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
@@ -49,43 +49,44 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.post('/api/auth/register', (req, res) => {
-  const { firstName, lastName, email, password, role, school } = req.body;
+  const { firstName, lastName, email, password, emergencyContact } = req.body;
+  if (email === 'admin@mindguard.app') return res.status(400).json({ error: 'Email reserved for admin' });
   if (db.users.find(u => u.email === email)) return res.status(400).json({ error: 'Email already registered' });
-  const user = { id: 'u' + Date.now(), email, password, name: `${firstName} ${lastName}`, role, school };
+  const user = { id: 'u' + Date.now(), email, password, name: `${firstName} ${lastName}`, role: 'user', emergencyContact, createdAt: new Date().toISOString() };
   db.users.push(user);
   saveDb();
   const token = Buffer.from(`${user.id}:${Date.now()}`).toString('base64');
-  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, school: user.school } });
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, emergencyContact: user.emergencyContact } });
 });
 
 // ===== LOG ROUTES =====
-app.post('/api/logs', (req, res) => {
-  const log = { id: 'log' + Date.now(), ...req.body, createdAt: new Date().toISOString() };
-  db.logs.push(log);
+app.post('/api/checkins', (req, res) => {
+  const log = { id: 'checkin' + Date.now(), ...req.body, timestamp: req.body.timestamp || new Date().toISOString() };
+  db.checkins.push(log);
   
   // Auto-generate alert if indicators are low
   const alerts = [];
   if (log.mood < 5) alerts.push({ type: 'Mood Drop', level: 'high', desc: `Mood score of ${log.mood} is critically low` });
-  if (log.sleep < 5) alerts.push({ type: 'Sleep Deficit', level: 'high', desc: `Only ${log.sleep} hours of sleep` });
+  if (log.sleepHours < 5) alerts.push({ type: 'Sleep Deficit', level: 'high', desc: `Only ${log.sleepHours} hours of sleep` });
   if (log.social < 4) alerts.push({ type: 'Social Withdrawal', level: 'medium', desc: `Social score of ${log.social} indicates withdrawal` });
-  alerts.forEach(a => db.alerts.push({ ...a, userId: log.userId, logId: log.id, createdAt: new Date().toISOString() }));
+  alerts.forEach(a => db.alerts.push({ ...a, userId: log.userId, checkinId: log.id, timestamp: new Date().toISOString() }));
   
   saveDb();
   res.json({ success: true, log, alertsGenerated: alerts.length });
 });
 
-app.get('/api/logs/:userId', (req, res) => {
-  const logs = db.logs.filter(l => l.userId === req.params.userId);
+app.get('/api/checkins/:userId', (req, res) => {
+  const logs = db.checkins.filter(l => l.userId === req.params.userId);
   res.json(logs);
 });
 
 // ===== ANALYTICS ROUTES =====
 app.get('/api/analytics/summary', (req, res) => {
-  const recentLogs = db.logs.slice(-100);
+  const recentLogs = db.checkins.slice(-100);
   const avg = (key) => recentLogs.length ? (recentLogs.reduce((s, l) => s + (parseFloat(l[key]) || 0), 0) / recentLogs.length).toFixed(1) : 0;
   res.json({
-    avgMood: avg('mood'), avgSleep: avg('sleep'), avgSocial: avg('social'),
-    totalLogs: db.logs.length, totalAlerts: db.alerts.length,
+    avgMood: avg('mood'), avgSleep: avg('sleepHours'), avgSocial: avg('social'),
+    totalCheckins: db.checkins.length, totalAlerts: db.alerts.length,
     highRiskCount: db.alerts.filter(a => a.level === 'high').length
   });
 });
@@ -135,9 +136,9 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`\n🚀 BehaviourSense Server running at http://localhost:${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}`);
-  console.log(`🔌 API: http://localhost:${PORT}/api/health\n`);
+  console.log(`\nMindGuard Server running at http://localhost:${PORT}`);
+  console.log(`Dashboard: http://localhost:${PORT}`);
+  console.log(`API: http://localhost:${PORT}/api/health\n`);
 });
 
 module.exports = app;

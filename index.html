@@ -70,6 +70,7 @@
         </div>
       </div>
       <div class="hero-visual">
+        <img class="hero-photo" src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=900&q=80" alt="Calm person journaling beside a window">
         <div class="dashboard-preview">
           <div class="preview-card mood">
             <div class="pcard-icon">😊</div>
@@ -156,14 +157,13 @@
           <p class="auth-sub">Sign in to continue your mental wellness journey</p>
           
           <div class="role-tabs">
-            <button class="role-tab active" onclick="setRole('student', this)">🙋 Individual</button>
-            <button class="role-tab" onclick="setRole('teacher', this)">👩‍🏫 Counselor</button>
+            <button class="role-tab active" onclick="setRole('user', this)">🙋 User</button>
             <button class="role-tab" onclick="setRole('admin', this)">🏫 Admin</button>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="loginNameGroup">
             <label>Your Name</label>
-            <input type="text" id="loginName" placeholder="Enter your name" class="form-input">
+            <input type="text" id="loginName" placeholder="Registered users can leave this blank" class="form-input">
           </div>
           <div class="form-group">
             <label>Email Address</label>
@@ -208,11 +208,6 @@
           </div>
 
           <button class="btn-primary btn-full" onclick="login()">Sign In →</button>
-          <div class="demo-logins">
-            <p>Quick demo:</p>
-            <button class="demo-btn" onclick="demoLogin('student')">Individual Demo</button>
-            <button class="demo-btn" onclick="demoLogin('teacher')">Counselor Demo</button>
-          </div>
           <p class="auth-switch">New here? <a href="#" onclick="showPage('register')">Create account</a></p>
         </div>
       </div>
@@ -235,8 +230,7 @@
           <div class="auth-logo">🧠 <span>MindGuard</span></div>
           <h2>Create Account</h2>
           <div class="role-tabs">
-            <button class="role-tab active" onclick="setRole('student', this)">🙋 Individual</button>
-            <button class="role-tab" onclick="setRole('teacher', this)">👩‍🏫 Counselor</button>
+            <button class="role-tab active" onclick="setRole('user', this)">🙋 User</button>
           </div>
           <div class="form-row">
             <div class="form-group"><label>First Name</label><input type="text" id="regFirst" placeholder="Jane" class="form-input"></div>
@@ -320,12 +314,11 @@
       <div class="dashboard-grid">
         <div class="dash-card wide">
           <div class="card-header">
-            <h3>Weekly Wellbeing Trends</h3>
+            <h3>Wellbeing Problem Map</h3>
             <div class="chart-legend">
-              <span class="legend-dot" style="background:#6366f1"></span>Mood
-              <span class="legend-dot" style="background:#22c55e"></span>Activity
-              <span class="legend-dot" style="background:#3b82f6"></span>Sleep
-              <span class="legend-dot" style="background:#f59e0b"></span>Social
+              <span class="legend-dot" style="background:#2563eb"></span>Mood
+              <span class="legend-dot" style="background:#dc2626"></span>Stress
+              <span class="legend-dot" style="background:#059669"></span>Sleep
             </div>
           </div>
           <canvas id="trendChart"></canvas>
@@ -371,7 +364,7 @@
           <p class="page-sub">How are you doing today? Takes about 3 minutes.</p>
         </div>
         <div class="progress-ring-wrap">
-          <div class="progress-label" id="trackProgress">Step 1 of 6</div>
+          <div class="progress-label" id="trackProgress">Step 1 of 5</div>
         </div>
       </div>
 
@@ -381,13 +374,12 @@
         <div class="step-tab" id="stab-3" onclick="goStep(3)"><span>🏃</span><span class="tab-label">Activity</span></div>
         <div class="step-tab" id="stab-4" onclick="goStep(4)"><span>💬</span><span class="tab-label">Social</span></div>
         <div class="step-tab" id="stab-5" onclick="goStep(5)"><span>🧠</span><span class="tab-label">Psychology</span></div>
-        <div class="step-tab" id="stab-6" onclick="goStep(6)"><span>📸</span><span class="tab-label">Feelings</span></div>
       </div>
 
       <!-- STEP 1: MOOD -->
       <div class="track-step" id="step-1">
         <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🎭</div><div><h3>Mood & Emotions</h3><p>How are you feeling emotionally today?</p></div></div>
+          <div class="track-card-header"><div class="tch-icon">🎭</div><div><h3>Mood & Emotions</h3><p>Clear questions about interest, sadness, and emotional changes.</p></div></div>
           <div class="track-body">
             <label class="track-label">Overall Mood <span class="label-hint">(1 = Very Low, 10 = Amazing)</span></label>
             <div class="emoji-scale">
@@ -413,7 +405,7 @@
               <button class="chip" onclick="toggleChip(this)">🥺 Overwhelmed</button>
             </div>
 
-            <label class="track-label" style="margin-top:1.5rem">In the past 2 weeks, how often have you felt little interest or pleasure in doing things?</label>
+            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did you lose interest in activities you normally enjoy?</label>
             <div class="mcq-group" id="mq1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -421,7 +413,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq1',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Have you felt down, depressed, or hopeless recently?</label>
+            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did you feel sad, empty, depressed, or hopeless?</label>
             <div class="mcq-group" id="mq2">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq2',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq2',1)"><span class="mcq-mark"></span>Several days</div>
@@ -442,7 +434,7 @@
       <!-- STEP 2: SLEEP -->
       <div class="track-step hidden" id="step-2">
         <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🌙</div><div><h3>Sleep Quality</h3><p>Tell us about last night's sleep.</p></div></div>
+          <div class="track-card-header"><div class="tch-icon">🌙</div><div><h3>Sleep Quality</h3><p>Sleep changes can affect mood, anxiety, focus, and energy.</p></div></div>
           <div class="track-body">
             <label class="track-label">Hours of Sleep Last Night</label>
             <div class="emoji-scale">
@@ -461,7 +453,7 @@
               <div class="qual-opt" onclick="selectQual(this,'sleepQual')"><div class="qual-icon">🌟</div><div>Excellent</div></div>
             </div>
 
-            <label class="track-label" style="margin-top:1.5rem">In the past 2 weeks, have you had trouble falling or staying asleep, or sleeping too much?</label>
+            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did sleep problems affect you: difficulty falling asleep, waking often, waking too early, or sleeping too much?</label>
             <div class="mcq-group" id="mq_sleep1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_sleep1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -492,7 +484,7 @@
       <!-- STEP 3: ACTIVITY -->
       <div class="track-step hidden" id="step-3">
         <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🏃</div><div><h3>Physical Activity</h3><p>How active were you today?</p></div></div>
+          <div class="track-card-header"><div class="tch-icon">🏃</div><div><h3>Physical Activity</h3><p>Energy, movement, appetite, and daily routine give useful mental-health signals.</p></div></div>
           <div class="track-body">
             <label class="track-label">Exercise / Physical Activity Level</label>
             <div class="activity-grid">
@@ -503,7 +495,7 @@
               <div class="act-opt" onclick="selectAct(this)"><div class="act-icon">⚡</div><div class="act-label">Very Active</div><div class="act-sub">Intense training</div></div>
             </div>
 
-            <label class="track-label" style="margin-top:1.5rem">In the last 2 weeks, have you felt tired or had little energy?</label>
+            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did low energy, tiredness, or body heaviness make daily tasks harder?</label>
             <div class="mcq-group" id="mq_act1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_act1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -532,7 +524,7 @@
       <!-- STEP 4: SOCIAL -->
       <div class="track-step hidden" id="step-4">
         <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">💬</div><div><h3>Social & Communication</h3><p>How did you connect with others today?</p></div></div>
+          <div class="track-card-header"><div class="tch-icon">💬</div><div><h3>Communication & Social Connection</h3><p>These questions look at isolation, support, conflict, and ability to communicate.</p></div></div>
           <div class="track-body">
             <label class="track-label">Social Interaction Level Today</label>
             <div class="emoji-scale">
@@ -542,7 +534,7 @@
             </div>
             <div class="scale-val" id="socialVal">6 — Moderate interaction</div>
 
-            <label class="track-label" style="margin-top:1.5rem">Have you been avoiding social situations or people lately?</label>
+            <label class="track-label" style="margin-top:1.5rem">Over the last 2 weeks, how often did you avoid calls, messages, friends, family, class, or work because you did not feel emotionally able?</label>
             <div class="mcq-group" id="mq_soc1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',0)"><span class="mcq-mark"></span>Not at all — I enjoy social time</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',1)"><span class="mcq-mark"></span>A little — I prefer quiet lately</div>
@@ -550,7 +542,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc1',3)"><span class="mcq-mark"></span>Completely — I want to be alone</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">How are your relationships feeling right now?</label>
+            <label class="track-label" style="margin-top:1rem">Right now, how supported and understood do you feel by the people around you?</label>
             <div class="mcq-group" id="mq_soc2">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',0)"><span class="mcq-mark"></span>Strong and supportive</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_soc2',1)"><span class="mcq-mark"></span>Okay, nothing special</div>
@@ -579,12 +571,12 @@
       <!-- STEP 5: PSYCHOLOGICAL -->
       <div class="track-step hidden" id="step-5">
         <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">🧠</div><div><h3>Psychological Assessment</h3><p>Based on validated mental health screening tools (PHQ-9, GAD-7)</p></div></div>
+          <div class="track-card-header"><div class="tch-icon">🧠</div><div><h3>Psychology Screening</h3><p>At least 7 screening questions help estimate stress, anxiety, depression, and functioning.</p></div></div>
           <div class="track-body">
 
             <div class="psych-disclaimer">⚕️ This is a self-assessment tool, not a clinical diagnosis. Results help identify patterns and are not a substitute for professional care.</div>
 
-            <label class="track-label">How often have you felt nervous, anxious, or on edge recently?</label>
+            <label class="track-label">Over the last 2 weeks, how often did you feel nervous, anxious, tense, or on edge?</label>
             <div class="mcq-group" id="mq_anx1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -592,7 +584,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx1',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Have you been unable to stop or control worrying?</label>
+            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often were you unable to stop or control worrying once it started?</label>
             <div class="mcq-group" id="mq_anx2">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',1)"><span class="mcq-mark"></span>Several days</div>
@@ -600,7 +592,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_anx2',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Have you had trouble concentrating on things like reading or watching TV?</label>
+            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did concentration problems affect studying, work, reading, or conversations?</label>
             <div class="mcq-group" id="mq_conc1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -608,7 +600,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_conc1',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Have you felt bad about yourself — or felt like a failure or like you've let people down?</label>
+            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did you strongly criticize yourself, feel like a failure, or feel you disappointed others?</label>
             <div class="mcq-group" id="mq_self1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -616,7 +608,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_self1',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Have you had trouble moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless?</label>
+            <label class="track-label" style="margin-top:1rem">Over the last 2 weeks, how often did others notice you moving or speaking much slower than usual, or being unusually restless?</label>
             <div class="mcq-group" id="mq_psych1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',0)"><span class="mcq-mark"></span>Not at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',1)"><span class="mcq-mark"></span>Several days</div>
@@ -624,7 +616,7 @@
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_psych1',3)"><span class="mcq-mark"></span>Nearly every day</div>
             </div>
 
-            <label class="track-label" style="margin-top:1rem">Overall, how difficult have these problems made it for you to do your work, take care of things at home, or get along with other people?</label>
+            <label class="track-label" style="margin-top:1rem">Overall, how much did these problems interfere with study, work, home responsibilities, or relationships?</label>
             <div class="mcq-group" id="mq_diff1">
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',0)"><span class="mcq-mark"></span>Not difficult at all</div>
               <div class="mcq-opt" onclick="selectMCQ(this,'mq_diff1',1)"><span class="mcq-mark"></span>Somewhat difficult</div>
@@ -645,89 +637,11 @@
           </div>
           <div class="track-footer">
             <button class="btn-outline" onclick="goStep(4)">← Back</button>
-            <button class="btn-primary" onclick="goStep(6)">Next: Feelings Images →</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STEP 6: PHOTO-BASED FEELINGS -->
-      <div class="track-step hidden" id="step-6">
-        <div class="track-card">
-          <div class="track-card-header"><div class="tch-icon">📸</div><div><h3>Visual Feelings Check</h3><p>Choose the images that best represent how you feel right now</p></div></div>
-          <div class="track-body">
-            <label class="track-label">Which image best represents your energy level today?</label>
-            <div class="photo-feelings-grid" id="pfEnergy">
-              <div class="pf-item" onclick="selectPhoto(this,'pfEnergy')" data-val="1">
-                <div class="pf-emoji">🌑</div><div class="pf-label">Completely drained</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfEnergy')" data-val="3">
-                <div class="pf-emoji">🌥️</div><div class="pf-label">Low energy</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfEnergy')" data-val="5">
-                <div class="pf-emoji">⛅</div><div class="pf-label">Getting by</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfEnergy')" data-val="7">
-                <div class="pf-emoji">☀️</div><div class="pf-label">Good energy</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfEnergy')" data-val="10">
-                <div class="pf-emoji">🌟</div><div class="pf-label">Energized!</div>
-              </div>
-            </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Which scene matches your current inner state?</label>
-            <div class="photo-feelings-grid" id="pfScene">
-              <div class="pf-item" onclick="selectPhoto(this,'pfScene')" data-val="storm">
-                <div class="pf-emoji">⛈️</div><div class="pf-label">Stormy inside</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfScene')" data-val="fog">
-                <div class="pf-emoji">🌫️</div><div class="pf-label">Foggy, unclear</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfScene')" data-val="calm">
-                <div class="pf-emoji">🌊</div><div class="pf-label">Calm waves</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfScene')" data-val="sunny">
-                <div class="pf-emoji">🌅</div><div class="pf-label">Hopeful sunrise</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfScene')" data-val="peak">
-                <div class="pf-emoji">🏔️</div><div class="pf-label">On top of the world</div>
-              </div>
-            </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Which animal best represents how you feel socially today?</label>
-            <div class="photo-feelings-grid" id="pfAnimal">
-              <div class="pf-item" onclick="selectPhoto(this,'pfAnimal')" data-val="turtle">
-                <div class="pf-emoji">🐢</div><div class="pf-label">Turtle (hiding)</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfAnimal')" data-val="cat">
-                <div class="pf-emoji">🐱</div><div class="pf-label">Cat (independent)</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfAnimal')" data-val="dog">
-                <div class="pf-emoji">🐶</div><div class="pf-label">Dog (friendly)</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfAnimal')" data-val="eagle">
-                <div class="pf-emoji">🦅</div><div class="pf-label">Eagle (focused)</div>
-              </div>
-              <div class="pf-item" onclick="selectPhoto(this,'pfAnimal')" data-val="lion">
-                <div class="pf-emoji">🦁</div><div class="pf-label">Lion (confident)</div>
-              </div>
-            </div>
-
-            <label class="track-label" style="margin-top:1.5rem">Which color represents your emotional state today?</label>
-            <div class="color-feelings-grid" id="pfColor">
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="grey" style="background:#9ca3af"><span>Grey</span></div>
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="blue" style="background:#3b82f6"><span>Blue</span></div>
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="green" style="background:#10b981"><span>Green</span></div>
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="yellow" style="background:#f59e0b"><span>Yellow</span></div>
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="red" style="background:#ef4444"><span>Red</span></div>
-              <div class="cf-item" onclick="selectPhoto(this,'pfColor')" data-val="purple" style="background:#8b5cf6"><span>Purple</span></div>
-            </div>
-          </div>
-          <div class="track-footer">
-            <button class="btn-outline" onclick="goStep(5)">← Back</button>
             <button class="btn-primary" onclick="submitLog()">Submit Check-In ✓</button>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -745,7 +659,7 @@
             <option>Last 30 Days</option>
             <option>This Month</option>
           </select>
-          <button class="btn-primary" onclick="exportReport()">📥 Export</button>
+          <button class="btn-primary" onclick="exportReport()">Download PDF</button>
         </div>
       </div>
 
@@ -761,12 +675,12 @@
         </div>
 
         <div class="dash-card">
-          <div class="card-header"><h3>📈 Behaviour Change Over Time</h3></div>
+          <div class="card-header"><h3>Problem Trend Over Time</h3></div>
           <canvas id="changeChart"></canvas>
         </div>
 
         <div class="dash-card">
-          <div class="card-header"><h3>🎯 Risk Distribution</h3></div>
+          <div class="card-header"><h3>Risk Meaning</h3></div>
           <canvas id="riskChart"></canvas>
         </div>
 
